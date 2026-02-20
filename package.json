@@ -1,0 +1,15 @@
+{
+  "name": "ciudad_limpia",
+  "version": "1.0.0",
+  "description": "",
+  "main": "scrip.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^12.9.0"
+  }
+}
