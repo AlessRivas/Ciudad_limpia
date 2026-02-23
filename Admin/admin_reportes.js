@@ -1,4 +1,4 @@
-import { firebaseConfig } from "../firebase-config.js";
+import { firebaseConfig } from "/firebase-config.js";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
@@ -8,7 +8,7 @@ const auth = getAuth(app);
 const lista = document.getElementById("listaReportes");
 
 onAuthStateChanged(auth, async (user) => {
-  if (!user) return window.location.href = "../login.html";
+  if (!user) return window.location.href = "/Login/login.html";
   cargarReportes();
 });
 

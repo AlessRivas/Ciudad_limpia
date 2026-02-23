@@ -1,4 +1,4 @@
-import { firebaseConfig } from "../firebase-config.js";
+import { firebaseConfig } from "/firebase-config.js";
 
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -16,7 +16,7 @@ const totalUsuarios = document.getElementById("totalUsuarios");
 // Protección por rol
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    window.location.href = "../login.html";
+    window.location.href = "/Login/login.html";
     return;
   }
 
@@ -25,7 +25,7 @@ onAuthStateChanged(auth, async (user) => {
 
   if (userData.role !== "admin") {
     alert("Acceso denegado");
-    window.location.href = "../reportes.html";
+    window.location.href = "/Reportes/reportes.html";
     return;
   }
 
@@ -51,5 +51,5 @@ async function cargarEstadisticas() {
 // Logout
 btnLogout.addEventListener("click", async () => {
   await signOut(auth);
-  window.location.href = "../login.html";
+  window.location.href = "/Login/login.html";
 });

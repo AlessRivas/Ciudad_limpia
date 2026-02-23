@@ -1,4 +1,4 @@
-import { firebaseConfig } from "../firebase-config.js";
+import { firebaseConfig } from "/firebase-config.js";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);

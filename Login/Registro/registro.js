@@ -1,5 +1,5 @@
 // registro.js
-import { firebaseConfig } from "../../firebase-config.js";
+import { firebaseConfig } from "/firebase-config.js";
 
 import {
   initializeApp,
@@ -62,7 +62,7 @@ form.addEventListener("submit", async (e) => {
     form.reset();
 
     setTimeout(() => {
-      window.location.href = "login.html";
+      window.location.href = "/Login/login.html";
     }, 900);
 
   } catch (err) {

@@ -1,5 +1,5 @@
 // reportes.js
-import { firebaseConfig } from "../firebase-config.js";
+import { firebaseConfig } from "/firebase-config.js";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -21,7 +21,7 @@ const userName = document.getElementById("userName");
 // ✅ PROTECCIÓN: si no hay sesión, regresa a login
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    window.location.href = "login.html";
+    window.location.href = "/Login/login.html";
     return;
   }
 
@@ -38,7 +38,7 @@ onAuthStateChanged(auth, async (user) => {
 // Logout
 btnLogout.addEventListener("click", async () => {
   await signOut(auth);
-  window.location.href = "login.html";
+  window.location.href = "/Login/login.html";
 });
 
 // Mostrar "Otro"
