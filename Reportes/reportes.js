@@ -1,5 +1,5 @@
 // reportes.js
-import { firebaseConfig } from "./firebase-config.js";
+import { firebaseConfig } from "../firebase-config.js";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -62,7 +62,7 @@ reportForm.addEventListener("submit", async (e) => {
 
   // Validación "Otro"
   if (tipoSelect.value === "Otro" && !otroDetalleInput.value.trim()) {
-    statusMsg.innerHTML = "❌ Especifica el tipo de reporte en 'Otro'.";
+    statusMsg.innerHTML = "Especifica el tipo de reporte en 'Otro'.";
     statusMsg.style.color = "red";
     btnEnviar.disabled = false;
     btnEnviar.innerText = "Enviar Reporte";
@@ -91,14 +91,14 @@ reportForm.addEventListener("submit", async (e) => {
     if (!response.ok) throw new Error("Error en la respuesta del servidor");
 
     const data = await response.json();
-    statusMsg.innerHTML = "✅ ¡Reporte enviado! Tu folio es: " + data.name;
+    statusMsg.innerHTML = "¡Reporte enviado! Tu folio es: " + data.name;
     statusMsg.style.color = "#2d5a27";
 
     reportForm.reset();
     otroContainer.style.display = "none";
   } catch (error) {
     console.error("Error:", error);
-    statusMsg.innerHTML = "❌ No se pudo enviar el reporte. Revisa la consola.";
+    statusMsg.innerHTML = "No se pudo enviar el reporte. Revisa la consola.";
     statusMsg.style.color = "red";
   } finally {
     btnEnviar.disabled = false;

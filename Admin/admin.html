@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Administrador - Ciudad Limpia</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<div class="container">
+  <div class="card">
+    <header>
+      <h1>Panel de Administrador</h1>
+      <p>Ciudad Limpia</p>
+      <button id="btnLogout">Cerrar sesión</button>
+    </header>
+
+    <h2>Estadísticas Generales</h2>
+
+    <div class="stats">
+      <p>Total Reportes: <strong id="totalReportes">0</strong></p>
+      <p>Pendientes: <strong id="pendientes">0</strong></p>
+      <p>Resueltos: <strong id="resueltos">0</strong></p>
+      <p>Total Usuarios: <strong id="totalUsuarios">0</strong></p>
+    </div>
+
+    <hr>
+
+    <div style="margin-top:20px;">
+      <a href="admin_reportes.html">Gestionar Reportes</a><br><br>
+      <a href="admin_usuarios.html">Gestionar Usuarios</a><br><br>
+      <a href="admin_perfil.html">Mi Perfil</a>
+    </div>
+
+  </div>
+</div>
+
+<script type="module" src="admin.js"></script>
+</body>
+</html>

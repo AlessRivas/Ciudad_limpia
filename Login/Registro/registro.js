@@ -1,5 +1,5 @@
 // registro.js
-import { firebaseConfig } from "./firebase-config.js";
+import { firebaseConfig } from "../../firebase-config.js";
 
 import {
   initializeApp,
@@ -58,7 +58,7 @@ form.addEventListener("submit", async (e) => {
     if (!res.ok) throw new Error("No se pudo guardar en la base de datos");
 
     statusMsg.style.color = "green";
-    statusMsg.innerHTML = "✅ Cuenta creada correctamente. Redirigiendo...";
+    statusMsg.innerHTML = "Cuenta creada correctamente. Redirigiendo...";
     form.reset();
 
     setTimeout(() => {
@@ -70,7 +70,7 @@ form.addEventListener("submit", async (e) => {
     console.log("ERROR MSG:", err.message);
 
     statusMsg.style.color = "red";
-    statusMsg.innerHTML = `❌ ${err.code || err.message}`;
+    statusMsg.innerHTML = ` ${err.code || err.message}`;
   } finally {
     btnRegister.disabled = false;
     btnRegister.innerText = "Crear cuenta";

@@ -1,5 +1,5 @@
 // login.js
-import { firebaseConfig } from "./firebase-config.js";
+import { firebaseConfig } from "../firebase-config.js";
 
 import {
   initializeApp,
