@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ciudad Limpia - Cuenta</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="cuenta.css" />
+</head>
+<body>
+
+  <header class="nav">
+    <div class="nav__left">
+      <img src="img/logo.jpg" class="nav__logo" alt="Logo">
+      <span class="nav__brand">Ciudad Limpia</span>
+    </div>
+    <nav class="nav__links"></nav>
+  </header>
+
+  <main class="page">
+    <section class="panel">
+      <h1>Mi Cuenta</h1>
+      <p class="muted">Edita tus datos y gestiona tu sesión.</p>
+
+      <div class="actions">
+        <a class="btnOutline" href="login.html">Login</a>
+        <a class="btnOutline" href="registro.html">Registro</a>
+      </div>
+
+      <hr class="sep" />
+
+      <form id="formPerfil" class="form">
+        <label>Nombre</label>
+        <input id="nombre" type="text" placeholder="Tu nombre" required />
+
+        <label>Teléfono</label>
+        <input id="telefono" type="tel" placeholder="Tu teléfono" required />
+
+        <label>Correo</label>
+        <input id="email" type="email" disabled />
+
+        <button class="btnPrimary" type="submit" id="btnGuardar">Guardar cambios</button>
+      </form>
+
+      <div id="status" class="status"></div>
+    </section>
+  </main>
+
+  <script type="module" src="cuenta.js"></script>
+</body>
+</html>

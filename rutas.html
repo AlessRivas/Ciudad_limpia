@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rutas y Horarios - Ciudad Limpia</title>
+
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../inicio.css"><!-- navbar -->
+  <link rel="stylesheet" href="rutas.css">
+
+  <!-- Google Maps (pon tu key) -->
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=TU_GOOGLE_MAPS_KEY&callback=initMap">
+  </script>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav__left">
+    <img src="../img/logo.jpg" class="nav__logo" alt="Logo">
+    <span class="nav__brand">Ciudad Limpia</span>
+  </div>
+  <nav class="nav__links"></nav>
+</header>
+
+<div class="rutas-wrap">
+  <aside class="panel">
+    <h2>Rutas y Horarios</h2>
+    <input id="busqueda" type="text" placeholder="Buscar ruta, colonia, calle u horario...">
+    <div id="listaRutas" class="lista"></div>
+    <div id="hint" class="hint">Selecciona una ruta para verla en el mapa.</div>
+  </aside>
+
+  <section class="map-area">
+    <div id="map"></div>
+  </section>
+</div>
+
+<script type="module" src="rutas.js"></script>
+</body>
+</html>

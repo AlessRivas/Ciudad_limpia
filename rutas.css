@@ -1,0 +1,65 @@
+.rutas-wrap{
+  display:flex;
+  height: calc(100vh - 70px);
+}
+
+.panel{
+  width: 34%;
+  background: #f4f7f4;
+  border-right: 2px solid #e0e0e0;
+  padding: 18px;
+  overflow-y:auto;
+}
+
+.panel h2{ margin:0 0 12px; color:#2d5a27; }
+
+#busqueda{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1.5px solid #e1e1e1;
+  margin-bottom:12px;
+}
+
+.lista{ display:flex; flex-direction:column; gap:10px; }
+
+.ruta-card{
+  background:#fff;
+  border-radius:14px;
+  padding:12px;
+  box-shadow:0 8px 18px rgba(0,0,0,0.05);
+  border:1px solid #eee;
+}
+.ruta-card.active{ border:2px solid #2d5a27; }
+
+.ruta-card h3{ margin:0 0 6px; color:#2d5a27; }
+.ruta-card p{ margin:0 0 4px; color:#555; font-size:13px; }
+
+.ruta-actions{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+.btnPrimary{
+  border:none; background:#2d5a27; color:#fff;
+  padding:9px 10px; border-radius:10px; font-weight:800; cursor:pointer;
+}
+.btnPrimary:hover{ background:#4CAF50; }
+
+.btnFav{
+  border:2px solid #2d5a27;
+  background:#fff;
+  padding:7px 10px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:900;
+}
+.btnFav.on{ color:#fff; background:#d93025; border-color:#d93025; }
+
+.hint{ margin-top:12px; color:#666; font-weight:600; font-size:13px; }
+
+.map-area{ width:66%; }
+#map{ width:100%; height:100%; }
+
+@media (max-width: 900px){
+  .rutas-wrap{ flex-direction:column; }
+  .panel{ width:100%; height:42vh; }
+  .map-area{ width:100%; height:58vh; }
+  #map{ height:100%; }
+}

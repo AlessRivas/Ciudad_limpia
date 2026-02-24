@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Reportes | Ciudad Limpia</title>
+
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../inicio.css" />
+  <link rel="stylesheet" href="admin-reportes.css" />
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav__left">
+    <img src="../img/logo.jpg" class="nav__logo" alt="Logo">
+    <span class="nav__brand">Ciudad Limpia</span>
+  </div>
+  <nav class="nav__links">
+    <a class="nav__link" href="../inicio.html">Inicio</a>
+    <a class="nav__link" href="../reportes.html">Reportes</a>
+    <a class="nav__link active" href="./admin-reportes.html">Admin</a>
+    <button id="btnLogout" class="nav__btn" type="button">Cerrar sesión</button>
+  </nav>
+</header>
+
+<main class="admin">
+  <section class="admin__top">
+    <div>
+      <h1>Administrador · Gestión de Reportes</h1>
+      <p id="adminInfo" class="muted">Cargando…</p>
+    </div>
+
+    <div class="admin__filters">
+      <input id="q" type="text" placeholder="Buscar por tipo/ubicación/usuario..." />
+      <select id="fEstado">
+        <option value="">Todos</option>
+        <option value="Pendiente">Pendiente</option>
+        <option value="En proceso">En proceso</option>
+        <option value="Resuelto">Resuelto</option>
+      </select>
+      <button id="btnReload" class="btnOutline" type="button">Recargar</button>
+    </div>
+  </section>
+
+  <section class="admin__grid">
+    <div class="panel">
+      <h2>Lista</h2>
+      <div id="lista" class="lista"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Editar reporte</h2>
+
+      <form id="formEdit" class="form">
+        <input type="hidden" id="rid" />
+
+        <label>Tipo</label>
+        <input id="tipo" type="text" required />
+
+        <label>Ubicación</label>
+        <input id="ubicacion" type="text" required />
+
+        <label>Descripción</label>
+        <textarea id="descripcion" rows="4"></textarea>
+
+        <label>Estado</label>
+        <select id="estado" required>
+          <option value="Pendiente">Pendiente</option>
+          <option value="En proceso">En proceso</option>
+          <option value="Resuelto">Resuelto</option>
+        </select>
+
+        <div class="row">
+          <button class="btnPrimary" id="btnGuardar" type="submit">Guardar cambios</button>
+          <button class="btnDanger" id="btnEliminar" type="button" disabled>Eliminar</button>
+        </div>
+
+        <div id="status" class="status"></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<script type="module" src="admin-reportes.js"></script>
+</body>
+</html>

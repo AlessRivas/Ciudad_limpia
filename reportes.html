@@ -3,78 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ciudad Limpia - Reporte Ciudadano</title>
+  <title>Ciudad Limpia - Reportes</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="inicio.css"><!-- para navbar -->
 </head>
 <body>
 
-  <div class="container">
-    <div class="card">
-      <header>
-        <div class="logo-container">
-          <img src="img/logo.jpg" alt="Logo Ciudad Limpia" class="main-logo">
-        </div>
-        <h1>Ciudad Limpia</h1>
-        <p>Sistema de Gestión de Residuos</p>
-
-        <div style="display:flex; justify-content:space-between; gap:10px; margin-top:12px;">
-          <span id="userName" style="font-weight:600;"></span>
-          <button id="btnLogout" type="button" style="width:auto;padding:10px 14px;">Cerrar sesión</button>
-        </div>
-      </header>
-
-      <form id="reportForm">
-        <div class="form-group">
-          <label for="usuario">Nombre del Reportante</label>
-          <input type="text" id="usuario" placeholder="Ej. Juan Pérez" required>
-        </div>
-
-        <div class="form-group">
-          <label for="tipo">Tipo de Incidencia</label>
-          <select id="tipo" required>
-            <option value="" disabled selected>Seleccione una opción...</option>
-            <optgroup label="Servicio de Recolección">
-              <option value="Camión no pasó">El camión no pasó en horario</option>
-              <option value="Ruta incompleta">Falta de cobertura en la calle</option>
-              <option value="Derrame de residuos">Derrame de basura por el camión</option>
-            </optgroup>
-            <optgroup label="Focos de Contaminación">
-              <option value="Tiradero clandestino">Tiradero en lote baldío</option>
-              <option value="Basura acumulada">Contenedores públicos saturados</option>
-              <option value="Animal muerto">Presencia de animal muerto</option>
-              <option value="Escombros">Acumulación de escombros/muebles</option>
-            </optgroup>
-            <optgroup label="Mantenimiento y Civismo">
-              <option value="Papeleras dañadas">Cestos públicos rotos</option>
-              <option value="Quema de basura">Quema de residuos al aire libre</option>
-              <option value="Otro">Otro caso (especificar abajo)</option>
-            </optgroup>
-          </select>
-        </div>
-
-        <div class="form-group" id="otroContainer" style="display:none;">
-          <label for="otroDetalle">Especifique el tipo de reporte</label>
-          <input type="text" id="otroDetalle" placeholder="Escriba aquí el problema">
-        </div>
-
-        <div class="form-group">
-          <label for="ubicacion">Ubicación Exacta / Zona</label>
-          <input type="text" id="ubicacion" placeholder="Ej. Col. Centro, Calle Juárez #123" required>
-        </div>
-
-        <div class="form-group">
-          <label for="descripcion">Descripción del Problema</label>
-          <textarea id="descripcion" rows="3" placeholder="Detalla lo ocurrido..."></textarea>
-        </div>
-
-        <button type="submit" id="btnEnviar">Enviar Reporte</button>
-      </form>
-
-      <div id="status"></div>
-    </div>
+<header class="nav">
+  <div class="nav__left">
+    <img src="img/logo.jpg" class="nav__logo" alt="Logo">
+    <span class="nav__brand">Ciudad Limpia</span>
   </div>
+  <nav class="nav__links"></nav>
+</header>
 
-  <script type="module" src="reportes.js"></script>
+<div class="container">
+  <div class="card">
+    <header>
+      <h1>Reportes</h1>
+      <p>Reporte ciudadano</p>
+      <div style="display:flex;justify-content:space-between;gap:10px;margin-top:12px;">
+        <span id="userName" style="font-weight:600;"></span>
+      </div>
+    </header>
+
+    <form id="reportForm">
+      <div class="form-group">
+        <label for="usuario">Nombre del Reportante</label>
+        <input type="text" id="usuario" placeholder="Ej. Juan Pérez" required>
+      </div>
+
+      <div class="form-group">
+        <label for="tipo">Tipo de Incidencia</label>
+        <select id="tipo" required>
+          <option value="" disabled selected>Seleccione una opción...</option>
+          <optgroup label="Servicio de Recolección">
+            <option value="Camión no pasó">El camión no pasó en horario</option>
+            <option value="Ruta incompleta">Falta de cobertura en la calle</option>
+            <option value="Derrame de residuos">Derrame de basura por el camión</option>
+          </optgroup>
+          <optgroup label="Focos de Contaminación">
+            <option value="Tiradero clandestino">Tiradero en lote baldío</option>
+            <option value="Basura acumulada">Contenedores públicos saturados</option>
+            <option value="Animal muerto">Presencia de animal muerto</option>
+            <option value="Escombros">Acumulación de escombros/muebles</option>
+          </optgroup>
+          <optgroup label="Mantenimiento y Civismo">
+            <option value="Papeleras dañadas">Cestos públicos rotos</option>
+            <option value="Quema de basura">Quema de residuos al aire libre</option>
+            <option value="Otro">Otro caso (especificar abajo)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="form-group" id="otroContainer" style="display:none;">
+        <label for="otroDetalle">Especifique el tipo de reporte</label>
+        <input type="text" id="otroDetalle" placeholder="Escriba aquí el problema">
+      </div>
+
+      <div class="form-group">
+        <label for="ubicacion">Ubicación Exacta / Zona</label>
+        <input type="text" id="ubicacion" placeholder="Ej. Col. Centro, Calle Juárez #123" required>
+      </div>
+
+      <div class="form-group">
+        <label for="descripcion">Descripción del Problema</label>
+        <textarea id="descripcion" rows="3" placeholder="Detalla lo ocurrido..."></textarea>
+      </div>
+
+      <button type="submit" id="btnEnviar">Enviar Reporte</button>
+    </form>
+
+    <div id="status"></div>
+  </div>
+</div>
+
+<script type="module" src="reportes.js"></script>
 </body>
 </html>

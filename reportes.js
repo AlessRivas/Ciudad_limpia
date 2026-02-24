@@ -1,10 +1,10 @@
-// reportes.js
 import { firebaseConfig } from "./firebase-config.js";
+import { renderNavbar } from "./components/navbar.js";
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const API_URL = `${firebaseConfig.databaseURL}/reportes.json`;
@@ -15,33 +15,32 @@ const otroContainer = document.getElementById("otroContainer");
 const otroDetalleInput = document.getElementById("otroDetalle");
 const statusMsg = document.getElementById("status");
 const btnEnviar = document.getElementById("btnEnviar");
-const btnLogout = document.getElementById("btnLogout");
 const userName = document.getElementById("userName");
 
-// ✅ PROTECCIÓN: si no hay sesión, regresa a login
 onAuthStateChanged(auth, async (user) => {
+  renderNavbar({ active: "reportes", user, base: "." });
+
   if (!user) {
     window.location.href = "login.html";
     return;
   }
 
-  // (Opcional) cargar nombre desde /users/{uid} para mostrarlo
   try {
     const res = await fetch(`${firebaseConfig.databaseURL}/users/${user.uid}.json`);
     const data = await res.json();
-    userName.textContent = data?.name ? `Hola, ${data.name}` : `Hola, ${user.email}`;
+    userName.textContent = data?.name ? `Hola, ${data.name}` : `Hola`;
   } catch {
-    userName.textContent = `Hola, ${user.email}`;
+    userName.textContent = `Hola`;
   }
 });
 
-// Logout
-btnLogout.addEventListener("click", async () => {
-  await signOut(auth);
-  window.location.href = "login.html";
+document.addEventListener("click", async (e) => {
+  if (e.target?.id === "btnLogout") {
+    await signOut(auth);
+    window.location.href = "login.html";
+  }
 });
 
-// Mostrar "Otro"
 tipoSelect.addEventListener("change", () => {
   if (tipoSelect.value === "Otro") {
     otroContainer.style.display = "block";
@@ -53,14 +52,12 @@ tipoSelect.addEventListener("change", () => {
   }
 });
 
-// Enviar reporte
 reportForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   btnEnviar.disabled = true;
   btnEnviar.innerText = "Enviando reporte...";
 
-  // Validación "Otro"
   if (tipoSelect.value === "Otro" && !otroDetalleInput.value.trim()) {
     statusMsg.innerHTML = "❌ Especifica el tipo de reporte en 'Otro'.";
     statusMsg.style.color = "red";
@@ -88,16 +85,15 @@ reportForm.addEventListener("submit", async (e) => {
       body: JSON.stringify(nuevoReporte)
     });
 
-    if (!response.ok) throw new Error("Error en la respuesta del servidor");
-
+    if (!response.ok) throw new Error("Error al guardar en RTDB");
     const data = await response.json();
-    statusMsg.innerHTML = "✅ ¡Reporte enviado! Tu folio es: " + data.name;
-    statusMsg.style.color = "#2d5a27";
 
+    statusMsg.innerHTML = "✅ ¡Reporte enviado! Folio: " + data.name;
+    statusMsg.style.color = "#2d5a27";
     reportForm.reset();
     otroContainer.style.display = "none";
   } catch (error) {
-    console.error("Error:", error);
+    console.error(error);
     statusMsg.innerHTML = "❌ No se pudo enviar el reporte. Revisa la consola.";
     statusMsg.style.color = "red";
   } finally {
