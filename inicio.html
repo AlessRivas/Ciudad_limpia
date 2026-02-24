@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ciudad Limpia - Inicio</title>
+
+  <!-- Reusa tu style.css del proyecto -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Estilos extra solo para esta pantalla -->
+  <link rel="stylesheet" href="inicio.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="nav">
+    <div class="nav__left">
+      <img src="img/logo.jpg" class="nav__logo" alt="Logo">
+      <span class="nav__brand">Ciudad Limpia</span>
+    </div>
+
+    <nav class="nav__links">
+      <a href="inicio.html" class="nav__link active">Inicio</a>
+      <a href="reportes.html" class="nav__link">Reportes</a>
+      <a href="rutas/rutas.html" class="nav__link">Rutas</a>
+      <a href="cuenta.html" class="nav__link">Cuenta</a>
+
+      <button id="btnLogout" class="nav__btn" type="button" style="display:none;">
+        Cerrar sesión
+      </button>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO -->
+  <main class="home">
+    <section class="home__hero">
+      <h1>Bienvenido a Ciudad Limpia</h1>
+      <p>Consulta rutas y horarios, y reporta incidencias de recolección desde un solo lugar.</p>
+
+      <div class="home__actions">
+        <a class="home__btn" href="reportes.html">Ir a Reportes</a>
+        <a class="home__btn home__btn--outline" href="rutas/rutas.html">Ver Rutas</a>
+        <a class="home__btn home__btn--outline" href="cuenta.html">Mi Cuenta</a>
+      </div>
+
+      <div id="status" class="home__status"></div>
+    </section>
+
+    <section class="home__grid">
+      <div class="home__card">
+        <h3>Reportes</h3>
+        <p>Crea reportes con tipo de incidencia, ubicación y descripción.</p>
+        <a href="reportes.html">Abrir →</a>
+      </div>
+
+      <div class="home__card">
+        <h3>Rutas y Horarios</h3>
+        <p>Busca por ruta, colonia, calle u horario y visualiza el recorrido.</p>
+        <a href="rutas/rutas.html">Abrir →</a>
+      </div>
+
+      <div class="home__card">
+        <h3>Cuenta</h3>
+        <p>Revisa tus datos y gestiona tu sesión.</p>
+        <a href="cuenta.html">Abrir →</a>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="inicio.js"></script>
+</body>
+</html>
