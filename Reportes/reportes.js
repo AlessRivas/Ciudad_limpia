@@ -1,5 +1,10 @@
+<<<<<<< HEAD:reportes.js
 import { firebaseConfig } from "./firebase-config.js";
 import { renderNavbar } from "./components/navbar.js";
+=======
+// reportes.js
+import { firebaseConfig } from "/firebase-config.js";
+>>>>>>> 271bbef59182b5ee61616807b88aaba3e586f824:Reportes/reportes.js
 
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -21,7 +26,7 @@ onAuthStateChanged(auth, async (user) => {
   renderNavbar({ active: "reportes", user, base: "." });
 
   if (!user) {
-    window.location.href = "login.html";
+    window.location.href = "/Login/login.html";
     return;
   }
 
@@ -34,11 +39,18 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
+<<<<<<< HEAD:reportes.js
 document.addEventListener("click", async (e) => {
   if (e.target?.id === "btnLogout") {
     await signOut(auth);
     window.location.href = "login.html";
   }
+=======
+// Logout
+btnLogout.addEventListener("click", async () => {
+  await signOut(auth);
+  window.location.href = "/Login/login.html";
+>>>>>>> 271bbef59182b5ee61616807b88aaba3e586f824:Reportes/reportes.js
 });
 
 tipoSelect.addEventListener("change", () => {
@@ -59,7 +71,7 @@ reportForm.addEventListener("submit", async (e) => {
   btnEnviar.innerText = "Enviando reporte...";
 
   if (tipoSelect.value === "Otro" && !otroDetalleInput.value.trim()) {
-    statusMsg.innerHTML = "❌ Especifica el tipo de reporte en 'Otro'.";
+    statusMsg.innerHTML = "Especifica el tipo de reporte en 'Otro'.";
     statusMsg.style.color = "red";
     btnEnviar.disabled = false;
     btnEnviar.innerText = "Enviar Reporte";
@@ -87,14 +99,24 @@ reportForm.addEventListener("submit", async (e) => {
 
     if (!response.ok) throw new Error("Error al guardar en RTDB");
     const data = await response.json();
+<<<<<<< HEAD:reportes.js
+=======
+    statusMsg.innerHTML = "¡Reporte enviado! Tu folio es: " + data.name;
+    statusMsg.style.color = "#2d5a27";
+>>>>>>> 271bbef59182b5ee61616807b88aaba3e586f824:Reportes/reportes.js
 
     statusMsg.innerHTML = "✅ ¡Reporte enviado! Folio: " + data.name;
     statusMsg.style.color = "#2d5a27";
     reportForm.reset();
     otroContainer.style.display = "none";
   } catch (error) {
+<<<<<<< HEAD:reportes.js
     console.error(error);
     statusMsg.innerHTML = "❌ No se pudo enviar el reporte. Revisa la consola.";
+=======
+    console.error("Error:", error);
+    statusMsg.innerHTML = "No se pudo enviar el reporte. Revisa la consola.";
+>>>>>>> 271bbef59182b5ee61616807b88aaba3e586f824:Reportes/reportes.js
     statusMsg.style.color = "red";
   } finally {
     btnEnviar.disabled = false;

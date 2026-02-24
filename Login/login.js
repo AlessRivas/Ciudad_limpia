@@ -1,5 +1,5 @@
 // login.js
-import { firebaseConfig } from "./firebase-config.js";
+import { firebaseConfig } from "/firebase-config.js";
 
 import {
   initializeApp,
@@ -25,7 +25,7 @@ const btnLogin = document.getElementById("btnLogin");
 
 // Si ya está logueado, redirige
 onAuthStateChanged(auth, (user) => {
-  if (user) window.location.href = "reportes.html";
+  if (user) window.location.href = "/Reportes/reportes.html";
 });
 
 loginForm.addEventListener("submit", async (e) => {
@@ -42,7 +42,7 @@ loginForm.addEventListener("submit", async (e) => {
 
     statusMsg.style.color = "green";
     statusMsg.innerHTML = "✅ Sesión iniciada";
-    window.location.href = "reportes.html";
+    window.location.href = "/Reportes/reportes.html";
 
   } catch (err) {
     console.log("ERROR CODE:", err.code);
