@@ -1,31 +1,159 @@
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+﻿import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { auth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
 
-const DB_BASE = `${firebaseConfig.databaseURL}/reportes`;
+const adminInfo = document.getElementById("adminInfo");
+const lista = document.getElementById("lista");
 
-const tablaBody = document.getElementById("tablaBody");
-const paginacionDiv = document.getElementById("paginacion");
-const btnRecargar = document.getElementById("btnRecargar");
-const btnLogout = document.getElementById("logout");
+const q = document.getElementById("q");
+const fEstado = document.getElementById("fEstado");
+const btnReload = document.getElementById("btnReload");
+const btnLogout = document.getElementById("btnLogout");
 
-const buscador = document.getElementById("buscador");
-const filtroEstado = document.getElementById("filtroEstado");
-
-const modal = document.getElementById("modalEditar");
-const editId = document.getElementById("editId");
-const editTipo = document.getElementById("editTipo");
-const editUsuario = document.getElementById("editUsuario");
-const editUbicacion = document.getElementById("editUbicacion");
-const editDescripcion = document.getElementById("editDescripcion");
-const editEstado = document.getElementById("editEstado");
+const formEdit = document.getElementById("formEdit");
+const rid = document.getElementById("rid");
+const tipo = document.getElementById("tipo");
+const ubicacion = document.getElementById("ubicacion");
+const descripcion = document.getElementById("descripcion");
+const estado = document.getElementById("estado");
 
 const btnGuardar = document.getElementById("btnGuardar");
-const btnCerrar = document.getElementById("btnCerrar");
+const btnEliminar = document.getElementById("btnEliminar");
+const status = document.getElementById("status");
 
-let reportesGlobal = [];
-let reportesFiltrados = [];
-let paginaActual = 1;
-const porPagina = 5;
+const REPORTES_URL = `${firebaseConfig.databaseURL}/reportes.json`;
+const reporteUrl = (id) => `${firebaseConfig.databaseURL}/reportes/${id}.json`;
+
+let reportes = {};
+let currentId = null;
+
+function badgeClass(estadoStr) {
+  const e = (estadoStr || "").toLowerCase();
+  if (e.includes("proceso")) return "proceso";
+  if (e.includes("resuelto")) return "resuelto";
+  return "pendiente";
+}
+
+function setActiveCard(id) {
+  document.querySelectorAll(".item").forEach((el) => el.classList.remove("active"));
+  const el = document.getElementById(`rep-${id}`);
+  if (el) el.classList.add("active");
+}
+
+function resetEditor() {
+  currentId = null;
+  rid.value = "";
+  tipo.value = "";
+  ubicacion.value = "";
+  descripcion.value = "";
+  estado.value = "Pendiente";
+  btnEliminar.disabled = true;
+  status.textContent = "";
+}
+
+function fillEditor(id) {
+  const reporte = reportes[id];
+  if (!reporte) return;
+
+  currentId = id;
+  rid.value = id;
+  tipo.value = reporte.tipo || "";
+  ubicacion.value = reporte.ubicacion || "";
+  descripcion.value = reporte.descripcion || "";
+  estado.value = reporte.estado || "Pendiente";
+
+  btnEliminar.disabled = false;
+  status.style.color = "#777";
+  status.textContent = `Editando reporte: ${id}`;
+}
+
+function getFilteredList() {
+  const text = q.value.trim().toLowerCase();
+  const est = fEstado.value;
+
+  return Object.entries(reportes)
+    .map(([id, reporte]) => ({ id, ...reporte }))
+    .filter((reporte) => {
+      if (est && (reporte.estado || "") !== est) return false;
+
+      if (!text) return true;
+      const hay = [
+        reporte.tipo,
+        reporte.ubicacion,
+        reporte.usuario,
+        reporte.descripcion,
+        reporte.estado,
+        reporte.fecha
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      return hay.includes(text);
+    })
+    .sort((a, b) => (b.fecha || "").localeCompare(a.fecha || ""));
+}
+
+function renderList() {
+  const list = getFilteredList();
+  lista.innerHTML = "";
+
+  if (!list.length) {
+    lista.innerHTML = `<p style="color:#777;font-weight:700;">No hay reportes con esos filtros.</p>`;
+    return;
+  }
+
+  for (const reporte of list) {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.id = `rep-${reporte.id}`;
+
+    div.innerHTML = `
+      <h3>${escapeHtml(reporte.tipo || "Reporte")}</h3>
+      <p><b>Usuario:</b> ${escapeHtml(reporte.usuario || "-")}</p>
+      <p><b>Ubicacion:</b> ${escapeHtml(reporte.ubicacion || "-")}</p>
+      <p><b>Fecha:</b> ${escapeHtml(reporte.fecha || "-")}</p>
+      <span class="badge ${badgeClass(reporte.estado)}">${escapeHtml(reporte.estado || "Pendiente")}</span>
+
+      <div class="actions">
+        <button class="btnView" type="button" data-view="${reporte.id}">Editar</button>
+        <button class="btnQuick" type="button" data-set="${reporte.id}|Pendiente">Pendiente</button>
+        <button class="btnQuick" type="button" data-set="${reporte.id}|En proceso">En proceso</button>
+        <button class="btnQuick" type="button" data-set="${reporte.id}|Resuelto">Resuelto</button>
+      </div>
+    `;
+
+    lista.appendChild(div);
+  }
+
+  if (currentId && document.getElementById(`rep-${currentId}`)) {
+    setActiveCard(currentId);
+  }
+}
+
+async function loadReportes() {
+  status.style.color = "#777";
+  status.textContent = "Cargando reportes...";
+
+  try {
+    const response = await fetch(REPORTES_URL);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    reportes = (await response.json()) || {};
+
+    renderList();
+
+    status.style.color = "#2d5a27";
+    status.textContent = `Reportes cargados: ${Object.keys(reportes).length}`;
+  } catch (error) {
+    console.error("Error cargando reportes:", error);
+    reportes = {};
+    renderList();
+
+    status.style.color = "red";
+    status.textContent = "No se pudieron cargar los reportes.";
+  }
+}
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -33,206 +161,115 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  const { role } = await getUserContext(user);
+  const { profile, role } = await getUserContext(user);
+
   if (role !== "admin") {
-    alert("No autorizado");
+    alert("Acceso denegado: solo administradores.");
     window.location.href = "../Home/inicio.html";
     return;
   }
 
-  await cargarReportes();
+  adminInfo.textContent = `Admin: ${profile?.name || user.email}`;
+
+  resetEditor();
+  await loadReportes();
 });
 
-btnLogout?.addEventListener("click", async () => {
+btnReload.addEventListener("click", loadReportes);
+q.addEventListener("input", renderList);
+fEstado.addEventListener("change", renderList);
+
+btnLogout.addEventListener("click", async () => {
   await logoutUser();
   window.location.href = "../Login/login.html";
 });
 
-btnRecargar.addEventListener("click", cargarReportes);
-buscador.addEventListener("input", aplicarFiltros);
-filtroEstado.addEventListener("change", aplicarFiltros);
+lista.addEventListener("click", async (event) => {
+  const view = event.target?.getAttribute?.("data-view");
+  const set = event.target?.getAttribute?.("data-set");
 
-btnGuardar.addEventListener("click", guardarEdicion);
-btnCerrar.addEventListener("click", cerrarModal);
-
-modal.addEventListener("click", (event) => {
-  if (event.target === modal) cerrarModal();
-});
-
-tablaBody.addEventListener("click", async (event) => {
-  const button = event.target.closest("button[data-action]");
-  if (!button) return;
-
-  const id = button.dataset.id;
-  const action = button.dataset.action;
-  if (!id || !action) return;
-
-  if (action === "editar") {
-    await abrirEditar(id);
-    return;
+  if (view) {
+    setActiveCard(view);
+    fillEditor(view);
   }
 
-  if (action === "eliminar") {
-    await eliminarReporte(id);
-  }
-});
+  if (set) {
+    const [id, newEstado] = set.split("|");
 
-async function cargarReportes() {
-  try {
-    const response = await fetch(`${DB_BASE}.json`);
-    const data = (await response.json()) || {};
-
-    reportesGlobal = Object.entries(data);
-    aplicarFiltros();
-  } catch (error) {
-    console.error("Error al cargar reportes:", error);
-    reportesGlobal = [];
-    reportesFiltrados = [];
-    renderTabla();
-    renderPaginacion();
-  }
-}
-
-function aplicarFiltros() {
-  const texto = toSafeLower(buscador.value);
-  const estadoSeleccionado = filtroEstado.value;
-
-  reportesFiltrados = reportesGlobal.filter(([, reporte]) => {
-    const tipo = toSafeLower(reporte.tipo);
-    const usuario = toSafeLower(reporte.usuario);
-    const ubicacion = toSafeLower(reporte.ubicacion);
-    const estado = reporte.estado || "Pendiente";
-
-    const coincideTexto =
-      tipo.includes(texto) ||
-      usuario.includes(texto) ||
-      ubicacion.includes(texto);
-
-    const coincideEstado =
-      estadoSeleccionado === "Todos" ||
-      estado === estadoSeleccionado;
-
-    return coincideTexto && coincideEstado;
-  });
-
-  paginaActual = 1;
-  renderTabla();
-  renderPaginacion();
-}
-
-function renderTabla() {
-  tablaBody.innerHTML = "";
-
-  if (!reportesFiltrados.length) {
-    tablaBody.innerHTML = `
-      <tr>
-        <td class="empty" colspan="7">No hay reportes para mostrar.</td>
-      </tr>
-    `;
-    return;
-  }
-
-  const inicio = (paginaActual - 1) * porPagina;
-  const fin = inicio + porPagina;
-  const paginaItems = reportesFiltrados.slice(inicio, fin);
-
-  paginaItems.forEach(([id, reporte]) => {
-    const tr = document.createElement("tr");
-
-    tr.innerHTML = `
-      <td>${escapeHtml(reporte.tipo || "-")}</td>
-      <td>${escapeHtml(reporte.usuario || "-")}</td>
-      <td>${escapeHtml(reporte.ubicacion || "-")}</td>
-      <td>${escapeHtml(reporte.descripcion || "-")}</td>
-      <td>${escapeHtml(reporte.fecha || "-")}</td>
-      <td>${escapeHtml(reporte.estado || "Pendiente")}</td>
-      <td>
-        <div class="acciones">
-          <button class="btn-editar" data-action="editar" data-id="${id}">Editar</button>
-          <button class="btn-eliminar" data-action="eliminar" data-id="${id}">Eliminar</button>
-        </div>
-      </td>
-    `;
-
-    tablaBody.appendChild(tr);
-  });
-}
-
-function renderPaginacion() {
-  paginacionDiv.innerHTML = "";
-
-  const totalPaginas = Math.ceil(reportesFiltrados.length / porPagina);
-  if (totalPaginas <= 1) return;
-
-  for (let i = 1; i <= totalPaginas; i += 1) {
-    const btn = document.createElement("button");
-    btn.textContent = i;
-    if (i === paginaActual) btn.classList.add("active");
-
-    btn.addEventListener("click", () => {
-      paginaActual = i;
-      renderTabla();
-      renderPaginacion();
+    await fetch(reporteUrl(id), {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ estado: newEstado })
     });
 
-    paginacionDiv.appendChild(btn);
+    reportes[id] = { ...(reportes[id] || {}), estado: newEstado };
+    renderList();
+
+    status.style.color = "#2d5a27";
+    status.textContent = `Estado actualizado: ${newEstado}`;
   }
-}
+});
 
-async function abrirEditar(id) {
-  const response = await fetch(`${DB_BASE}/${id}.json`);
-  const data = await response.json();
-  if (!data) return;
+formEdit.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!currentId) return;
 
-  editId.value = id;
-  editTipo.value = data.tipo || "";
-  editUsuario.value = data.usuario || "";
-  editUbicacion.value = data.ubicacion || "";
-  editDescripcion.value = data.descripcion || "";
-  editEstado.value = data.estado || "Pendiente";
+  btnGuardar.disabled = true;
+  btnGuardar.textContent = "Guardando...";
 
-  modal.style.display = "flex";
-  modal.setAttribute("aria-hidden", "false");
-}
+  try {
+    const payload = {
+      tipo: tipo.value.trim(),
+      ubicacion: ubicacion.value.trim(),
+      descripcion: descripcion.value.trim(),
+      estado: estado.value
+    };
 
-async function guardarEdicion() {
-  const id = editId.value;
-  if (!id) return;
+    await fetch(reporteUrl(currentId), {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
 
-  await fetch(`${DB_BASE}/${id}.json`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      tipo: editTipo.value.trim(),
-      usuario: editUsuario.value.trim(),
-      ubicacion: editUbicacion.value.trim(),
-      descripcion: editDescripcion.value.trim(),
-      estado: editEstado.value
-    })
-  });
+    reportes[currentId] = { ...(reportes[currentId] || {}), ...payload };
+    renderList();
+    setActiveCard(currentId);
 
-  cerrarModal();
-  await cargarReportes();
-}
+    status.style.color = "#2d5a27";
+    status.textContent = "Cambios guardados";
+  } catch (error) {
+    console.error("Error guardando cambios:", error);
+    status.style.color = "red";
+    status.textContent = "Error al guardar";
+  } finally {
+    btnGuardar.disabled = false;
+    btnGuardar.textContent = "Guardar cambios";
+  }
+});
 
-function cerrarModal() {
-  modal.style.display = "none";
-  modal.setAttribute("aria-hidden", "true");
-}
+btnEliminar.addEventListener("click", async () => {
+  if (!currentId) return;
+  if (!confirm("Seguro que quieres eliminar este reporte?")) return;
 
-async function eliminarReporte(id) {
-  if (!confirm("Eliminar reporte?")) return;
+  try {
+    await fetch(reporteUrl(currentId), { method: "DELETE" });
+    delete reportes[currentId];
 
-  await fetch(`${DB_BASE}/${id}.json`, { method: "DELETE" });
-  await cargarReportes();
-}
+    status.style.color = "#2d5a27";
+    status.textContent = "Reporte eliminado";
 
-function toSafeLower(value) {
-  return (value || "").toString().toLowerCase();
-}
+    resetEditor();
+    renderList();
+  } catch (error) {
+    console.error("Error eliminando reporte:", error);
+    status.style.color = "red";
+    status.textContent = "No se pudo eliminar";
+  }
+});
 
 function escapeHtml(value) {
-  return value
+  return (value || "")
+    .toString()
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")

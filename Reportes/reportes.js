@@ -1,4 +1,5 @@
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+﻿import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { renderNavbar } from "../Componentes/navbar.js";
 import { auth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
 
 const API_URL = `${firebaseConfig.databaseURL}/reportes.json`;
@@ -9,7 +10,6 @@ const otroContainer = document.getElementById("otroContainer");
 const otroDetalleInput = document.getElementById("otroDetalle");
 const statusMsg = document.getElementById("status");
 const btnEnviar = document.getElementById("btnEnviar");
-const btnLogout = document.getElementById("btnLogout");
 const userName = document.getElementById("userName");
 const usuarioInput = document.getElementById("usuario");
 
@@ -19,16 +19,26 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  const { profile } = await getUserContext(user);
-  const displayName = profile?.name || user.email;
+  const { profile, role } = await getUserContext(user);
 
+  renderNavbar({
+    active: "reportes",
+    user,
+    role,
+    base: ".."
+  });
+
+  const displayName = profile?.name || user.email || "usuario";
   userName.textContent = `Hola, ${displayName}`;
-  if (profile?.name && !usuarioInput.value.trim()) {
-    usuarioInput.value = profile.name;
+
+  if (!usuarioInput.value.trim()) {
+    usuarioInput.value = profile?.name || "";
   }
 });
 
-btnLogout.addEventListener("click", async () => {
+document.addEventListener("click", async (event) => {
+  if (event.target?.id !== "btnLogout") return;
+
   await logoutUser();
   window.location.href = "../Login/login.html";
 });
@@ -53,7 +63,16 @@ reportForm.addEventListener("submit", async (event) => {
     statusMsg.style.color = "red";
     statusMsg.textContent = "Especifica el tipo de reporte en 'Otro'.";
     btnEnviar.disabled = false;
-    btnEnviar.innerText = "Enviar Reporte";
+    btnEnviar.innerText = "Enviar reporte";
+    return;
+  }
+
+  const nombreUsuario = usuarioInput.value.trim();
+  if (!nombreUsuario) {
+    statusMsg.style.color = "red";
+    statusMsg.textContent = "Ingresa el nombre del reportante.";
+    btnEnviar.disabled = false;
+    btnEnviar.innerText = "Enviar reporte";
     return;
   }
 
@@ -63,7 +82,7 @@ reportForm.addEventListener("submit", async (event) => {
   }
 
   const nuevoReporte = {
-    usuario: usuarioInput.value.trim(),
+    usuario: nombreUsuario,
     tipo: tipoFinal,
     ubicacion: document.getElementById("ubicacion").value.trim(),
     descripcion: document.getElementById("descripcion").value.trim(),
@@ -78,7 +97,9 @@ reportForm.addEventListener("submit", async (event) => {
       body: JSON.stringify(nuevoReporte)
     });
 
-    if (!response.ok) throw new Error("Error al enviar el reporte");
+    if (!response.ok) {
+      throw new Error("Error al enviar el reporte");
+    }
 
     const data = await response.json();
     statusMsg.style.color = "#2d5a27";
@@ -92,6 +113,6 @@ reportForm.addEventListener("submit", async (event) => {
     statusMsg.textContent = "No se pudo enviar el reporte.";
   } finally {
     btnEnviar.disabled = false;
-    btnEnviar.innerText = "Enviar Reporte";
+    btnEnviar.innerText = "Enviar reporte";
   }
 });
