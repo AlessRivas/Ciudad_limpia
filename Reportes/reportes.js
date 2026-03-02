@@ -12,6 +12,7 @@ const statusMsg = document.getElementById("status");
 const btnEnviar = document.getElementById("btnEnviar");
 const userName = document.getElementById("userName");
 const usuarioInput = document.getElementById("usuario");
+let currentUser = null;
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -19,6 +20,7 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
+  currentUser = user;
   const { profile, role } = await getUserContext(user);
 
   renderNavbar({
@@ -83,6 +85,8 @@ reportForm.addEventListener("submit", async (event) => {
 
   const nuevoReporte = {
     usuario: nombreUsuario,
+    usuarioUid: currentUser?.uid || "",
+    usuarioEmail: currentUser?.email || "",
     tipo: tipoFinal,
     ubicacion: document.getElementById("ubicacion").value.trim(),
     descripcion: document.getElementById("descripcion").value.trim(),

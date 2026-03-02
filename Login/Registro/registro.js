@@ -32,8 +32,10 @@ form.addEventListener("submit", async (event) => {
     const userData = {
       name,
       phone,
+      address: "",
       email,
       role: "user",
+      favoriteRoutes: {},
       createdAt: new Date().toISOString()
     };
 

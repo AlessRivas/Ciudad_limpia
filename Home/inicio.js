@@ -3,6 +3,8 @@ import { renderNavbar } from "../Componentes/navbar.js";
 import { auth, getUserContext, logoutUser } from "../Componentes/auth.js";
 
 const status = document.getElementById("status");
+const perfilCta = document.getElementById("perfilCta");
+const perfilCardLink = document.getElementById("perfilCardLink");
 
 onAuthStateChanged(auth, async (user) => {
   const { role } = await getUserContext(user);
@@ -13,6 +15,13 @@ onAuthStateChanged(auth, async (user) => {
     role,
     base: ".."
   });
+
+  const perfilHref = role === "admin"
+    ? "../Admin/admin-perfil.html"
+    : "../Usuarios/Usuarios-perfil.html";
+
+  if (perfilCta) perfilCta.href = perfilHref;
+  if (perfilCardLink) perfilCardLink.href = perfilHref;
 
   if (user) {
     status.style.color = "#2d5a27";

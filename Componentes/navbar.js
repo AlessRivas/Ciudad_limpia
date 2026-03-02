@@ -6,6 +6,9 @@ export function renderNavbar({ active = "inicio", user = null, role = "user", ba
   const hrefBase = base && base !== "." ? base : "";
   const prefix = hrefBase ? `${hrefBase}/` : "";
   const isAdmin = role === "admin";
+  const profileHref = isAdmin
+    ? `${prefix}Admin/admin-perfil.html`
+    : `${prefix}Usuarios/Usuarios-perfil.html`;
 
   if (user) {
     navLinks.innerHTML = `
@@ -13,7 +16,7 @@ export function renderNavbar({ active = "inicio", user = null, role = "user", ba
       <a class="${is("reportes")}" href="${prefix}Reportes/reportes.html">Reportes</a>
       <a class="${is("rutas")}" href="${prefix}Rutas/Rutas.html">Rutas</a>
       ${isAdmin ? `<a class="${is("admin")}" href="${prefix}Admin/admin.html">Admin</a>` : ""}
-      <a class="${is("perfil")}" href="${prefix}Admin/admin-perfil.html">Mi perfil</a>
+      <a class="${is("perfil")}" href="${profileHref}">Mi perfil</a>
       <button id="btnLogout" class="nav__btn" type="button">Cerrar sesion</button>
     `;
   } else {
