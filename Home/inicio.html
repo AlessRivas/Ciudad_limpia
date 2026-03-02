@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ciudad Limpia - Inicio</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="inicio.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="nav__left">
+      <img src="../Imagenes/Logo.jpg" class="nav__logo" alt="Logo">
+      <span class="nav__brand">Ciudad Limpia</span>
+    </div>
+    <nav class="nav__links"></nav>
+  </header>
+
+  <main class="home">
+    <section class="home__hero">
+      <h1>Bienvenido a Ciudad Limpia</h1>
+      <p>Consulta rutas y horarios, y reporta incidencias de recoleccion desde un solo lugar.</p>
+
+      <div class="home__actions">
+        <a class="home__btn" href="../Reportes/reportes.html">Ir a Reportes</a>
+        <a class="home__btn home__btn--outline" href="../Rutas/Rutas.html">Ver Rutas</a>
+        <a class="home__btn home__btn--outline" href="../Admin/admin-perfil.html">Mi Perfil</a>
+      </div>
+
+      <div id="status" class="home__status"></div>
+    </section>
+
+    <section class="home__grid">
+      <div class="home__card">
+        <h3>Reportes</h3>
+        <p>Crea reportes con tipo de incidencia, ubicacion y descripcion.</p>
+        <a href="../Reportes/reportes.html">Abrir -></a>
+      </div>
+
+      <div class="home__card">
+        <h3>Rutas y Horarios</h3>
+        <p>Busca por ruta, colonia, calle u horario y visualiza el recorrido.</p>
+        <a href="../Rutas/Rutas.html">Abrir -></a>
+      </div>
+
+      <div class="home__card">
+        <h3>Mi Perfil</h3>
+        <p>Revisa tus datos y gestiona tu sesion.</p>
+        <a href="../Admin/admin-perfil.html">Abrir -></a>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="inicio.js"></script>
+</body>
+</html>

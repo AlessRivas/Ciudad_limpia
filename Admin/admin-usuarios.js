@@ -1,0 +1,142 @@
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { auth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
+
+const usuariosBody = document.getElementById("usuariosBody");
+const btnRecargar = document.getElementById("btnRecargar");
+const btnLogout = document.getElementById("logout");
+const buscadorUsuario = document.getElementById("buscadorUsuario");
+const filtroRol = document.getElementById("filtroRol");
+
+let usuariosGlobal = [];
+let usuariosFiltrados = [];
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "../Login/login.html";
+    return;
+  }
+
+  const { role } = await getUserContext(user);
+  if (role !== "admin") {
+    alert("No autorizado");
+    window.location.href = "../Home/inicio.html";
+    return;
+  }
+
+  await cargarUsuarios();
+});
+
+btnLogout?.addEventListener("click", async () => {
+  await logoutUser();
+  window.location.href = "../Login/login.html";
+});
+
+btnRecargar.addEventListener("click", cargarUsuarios);
+buscadorUsuario.addEventListener("input", aplicarFiltros);
+filtroRol.addEventListener("change", aplicarFiltros);
+
+usuariosBody.addEventListener("click", async (event) => {
+  const button = event.target.closest("button[data-action='rol']");
+  if (!button) return;
+
+  const uid = button.dataset.id;
+  if (!uid) return;
+
+  const selector = document.getElementById(`role-${uid}`);
+  const nuevoRol = selector?.value || "user";
+
+  await fetch(`${firebaseConfig.databaseURL}/users/${uid}.json`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ role: nuevoRol })
+  });
+
+  await cargarUsuarios();
+});
+
+async function cargarUsuarios() {
+  try {
+    const response = await fetch(`${firebaseConfig.databaseURL}/users.json`);
+    const data = (await response.json()) || {};
+
+    usuariosGlobal = Object.entries(data);
+    aplicarFiltros();
+  } catch (error) {
+    console.error("Error cargando usuarios:", error);
+    usuariosGlobal = [];
+    usuariosFiltrados = [];
+    renderTabla();
+  }
+}
+
+function aplicarFiltros() {
+  const texto = toSafeLower(buscadorUsuario.value);
+  const rolSeleccionado = filtroRol.value;
+
+  usuariosFiltrados = usuariosGlobal.filter(([, usuario]) => {
+    const nombre = toSafeLower(usuario.name);
+    const correo = toSafeLower(usuario.email);
+    const telefono = toSafeLower(usuario.phone);
+    const rol = usuario.role || "user";
+
+    const coincideTexto =
+      nombre.includes(texto) ||
+      correo.includes(texto) ||
+      telefono.includes(texto);
+
+    const coincideRol =
+      rolSeleccionado === "Todos" ||
+      rol === rolSeleccionado;
+
+    return coincideTexto && coincideRol;
+  });
+
+  renderTabla();
+}
+
+function renderTabla() {
+  usuariosBody.innerHTML = "";
+
+  if (!usuariosFiltrados.length) {
+    usuariosBody.innerHTML = `
+      <tr>
+        <td class="empty" colspan="5">No hay usuarios para mostrar.</td>
+      </tr>
+    `;
+    return;
+  }
+
+  usuariosFiltrados.forEach(([uid, usuario]) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${escapeHtml(usuario.name || "Sin nombre")}</td>
+      <td>${escapeHtml(usuario.email || "-")}</td>
+      <td>${escapeHtml(usuario.phone || "-")}</td>
+      <td>${escapeHtml(usuario.role || "user")}</td>
+      <td>
+        <div class="role-control">
+          <select id="role-${uid}">
+            <option ${(usuario.role || "user") === "user" ? "selected" : ""}>user</option>
+            <option ${usuario.role === "admin" ? "selected" : ""}>admin</option>
+          </select>
+          <button class="btn-role" data-action="rol" data-id="${uid}">Actualizar</button>
+        </div>
+      </td>
+    `;
+
+    usuariosBody.appendChild(tr);
+  });
+}
+
+function toSafeLower(value) {
+  return (value || "").toString().toLowerCase();
+}
+
+function escapeHtml(value) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Rutas - Ciudad Limpia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../Home/inicio.css">
+  <link rel="stylesheet" href="Rutas.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav__left">
+      <span class="nav__brand">Ciudad Limpia</span>
+    </div>
+    <nav class="nav__links"></nav>
+  </header>
+
+  <div class="container">
+    <h1>Rutas de Recoleccion</h1>
+    <input type="text" id="buscarRuta" placeholder="Buscar por nombre o zona...">
+    <div id="map"></div>
+    <div id="resultado"></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script type="module" src="Rutas.js"></script>
+</body>
+</html>

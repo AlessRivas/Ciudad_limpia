@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Reportes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="admin-reportes.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <h2>Admin Panel</h2>
+      <ul>
+        <li class="active"><a href="admin-reportes.html">Reportes</a></li>
+        <li><a href="admin-rutas.html">Rutas</a></li>
+        <li><a href="admin-usuarios.html">Usuarios</a></li>
+        <li><a href="admin.html">Dashboard</a></li>
+        <li><a href="admin-perfil.html">Mi Perfil</a></li>
+      </ul>
+      <button id="logout" class="btn-logout" type="button">Cerrar sesion</button>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <h1>Gestion de Reportes</h1>
+        <button id="btnRecargar" type="button">Recargar</button>
+      </div>
+
+      <div class="filtros">
+        <input type="text" id="buscador" placeholder="Buscar por tipo, usuario o ubicacion...">
+        <select id="filtroEstado">
+          <option value="Todos">Todos los estados</option>
+          <option value="Pendiente">Pendiente</option>
+          <option value="En proceso">En proceso</option>
+          <option value="Resuelto">Resuelto</option>
+        </select>
+      </div>
+
+      <div class="tabla-wrap">
+        <table class="tabla-reportes">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Usuario</th>
+              <th>Ubicacion</th>
+              <th>Descripcion</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaBody"></tbody>
+        </table>
+      </div>
+
+      <div class="paginacion" id="paginacion"></div>
+    </main>
+  </div>
+
+  <div class="modal" id="modalEditar" aria-hidden="true">
+    <div class="modal-content">
+      <h2>Editar Reporte</h2>
+
+      <input type="hidden" id="editId">
+
+      <label>Tipo</label>
+      <input type="text" id="editTipo">
+
+      <label>Usuario</label>
+      <input type="text" id="editUsuario">
+
+      <label>Ubicacion</label>
+      <input type="text" id="editUbicacion">
+
+      <label>Descripcion</label>
+      <textarea id="editDescripcion"></textarea>
+
+      <label>Estado</label>
+      <select id="editEstado">
+        <option value="Pendiente">Pendiente</option>
+        <option value="En proceso">En proceso</option>
+        <option value="Resuelto">Resuelto</option>
+      </select>
+
+      <div class="modal-buttons">
+        <button id="btnGuardar" type="button">Guardar</button>
+        <button id="btnCerrar" type="button">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="admin-reportes.js"></script>
+</body>
+</html>

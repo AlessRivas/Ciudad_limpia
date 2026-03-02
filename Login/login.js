@@ -1,35 +1,19 @@
-// login.js
-import { firebaseConfig } from "/firebase-config.js";
-
-import {
-  initializeApp,
-  getApps
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-// ✅ Evita inicializar Firebase 2 veces
-const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-// ✅ DEBUG: confirma qué apiKey está usando tu página
-console.log("APIKEY USADA (login):", firebaseConfig.apiKey);
+import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { auth, getLandingPathByRole, getUserContext } from "../Componentes/auth.js";
 
 const loginForm = document.getElementById("loginForm");
 const statusMsg = document.getElementById("status");
 const btnLogin = document.getElementById("btnLogin");
 
-// Si ya está logueado, redirige
-onAuthStateChanged(auth, (user) => {
-  if (user) window.location.href = "/Reportes/reportes.html";
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;
+
+  const { role } = await getUserContext(user);
+  window.location.href = getLandingPathByRole(role, "..");
 });
 
-loginForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
+loginForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
 
   btnLogin.disabled = true;
   btnLogin.innerText = "Entrando...";
@@ -38,18 +22,17 @@ loginForm.addEventListener("submit", async (e) => {
   const password = document.getElementById("password").value;
 
   try {
-    await signInWithEmailAndPassword(auth, email, password);
+    const credential = await signInWithEmailAndPassword(auth, email, password);
+    const { role } = await getUserContext(credential.user);
 
     statusMsg.style.color = "green";
-    statusMsg.innerHTML = "✅ Sesión iniciada";
-    window.location.href = "/Reportes/reportes.html";
+    statusMsg.textContent = "Sesion iniciada";
 
-  } catch (err) {
-    console.log("ERROR CODE:", err.code);
-    console.log("ERROR MSG:", err.message);
-
+    window.location.href = getLandingPathByRole(role, "..");
+  } catch (error) {
+    console.error("Error en login:", error);
     statusMsg.style.color = "red";
-    statusMsg.innerHTML = `❌ ${err.code || err.message}`;
+    statusMsg.textContent = error.code || "No se pudo iniciar sesion";
   } finally {
     btnLogin.disabled = false;
     btnLogin.innerText = "Entrar";

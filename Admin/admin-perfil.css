@@ -1,0 +1,68 @@
+.perfil-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+}
+
+.perfil-card {
+  background: white;
+  padding: 40px;
+  width: 450px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.perfil-card h1 {
+  margin-bottom: 20px;
+}
+
+.perfil-info {
+  margin-bottom: 25px;
+}
+
+.perfil-status {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.perfil-status--info {
+  background: #e8f1ff;
+  color: #2b4d80;
+}
+
+.perfil-status--success {
+  background: #e7f8ec;
+  color: #1f6a35;
+}
+
+.perfil-status--error {
+  background: #fdeaea;
+  color: #8a1f1f;
+}
+
+.perfil-edit input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0 15px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.perfil-edit button,
+.perfil-password button {
+  background: #1e88e5;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.perfil-edit button:hover,
+.perfil-password button:hover {
+  background: #1565c0;
+}

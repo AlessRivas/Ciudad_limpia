@@ -1,31 +1,21 @@
-// registro.js
-import { firebaseConfig } from "/firebase-config.js";
-
-import {
-  initializeApp,
-  getApps
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-
-import {
-  getAuth,
-  createUserWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-// ✅ Evita inicializar Firebase 2 veces
-const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-const API_BASE = firebaseConfig.databaseURL;
-
-// ✅ DEBUG: confirma qué apiKey está usando tu página
-console.log("APIKEY USADA (registro):", firebaseConfig.apiKey);
+import { createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { auth, firebaseConfig, getLandingPathByRole, getUserContext } from "../../Componentes/auth.js";
 
 const form = document.getElementById("registerForm");
 const statusMsg = document.getElementById("status");
 const btnRegister = document.getElementById("btnRegister");
+let isCreatingAccount = false;
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+onAuthStateChanged(auth, async (user) => {
+  if (!user || isCreatingAccount) return;
+
+  const { role } = await getUserContext(user);
+  window.location.href = getLandingPathByRole(role, "../..");
+});
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  isCreatingAccount = true;
 
   btnRegister.disabled = true;
   btnRegister.innerText = "Creando cuenta...";
@@ -36,11 +26,9 @@ form.addEventListener("submit", async (e) => {
   const password = document.getElementById("password").value;
 
   try {
-    // 1) Crear usuario en Auth
-    const cred = await createUserWithEmailAndPassword(auth, email, password);
-    const uid = cred.user.uid;
+    const credential = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = credential.user.uid;
 
-    // 2) Guardar perfil en RTDB
     const userData = {
       name,
       phone,
@@ -49,29 +37,26 @@ form.addEventListener("submit", async (e) => {
       createdAt: new Date().toISOString()
     };
 
-    const res = await fetch(`${API_BASE}/users/${uid}.json`, {
+    const response = await fetch(`${firebaseConfig.databaseURL}/users/${uid}.json`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData)
     });
 
-    if (!res.ok) throw new Error("No se pudo guardar en la base de datos");
+    if (!response.ok) throw new Error("No se pudo guardar el perfil");
 
     statusMsg.style.color = "green";
-    statusMsg.innerHTML = "Cuenta creada correctamente. Redirigiendo...";
-    form.reset();
+    statusMsg.textContent = "Cuenta creada correctamente";
 
     setTimeout(() => {
-      window.location.href = "/Login/login.html";
-    }, 900);
-
-  } catch (err) {
-    console.log("ERROR CODE:", err.code);
-    console.log("ERROR MSG:", err.message);
-
+      window.location.href = getLandingPathByRole("user", "../..");
+    }, 700);
+  } catch (error) {
+    console.error("Error en registro:", error);
     statusMsg.style.color = "red";
-    statusMsg.innerHTML = ` ${err.code || err.message}`;
+    statusMsg.textContent = error.code || error.message || "No se pudo crear la cuenta";
   } finally {
+    isCreatingAccount = false;
     btnRegister.disabled = false;
     btnRegister.innerText = "Crear cuenta";
   }

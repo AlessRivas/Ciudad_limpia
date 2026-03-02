@@ -2,39 +2,36 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Panel Administrador - Ciudad Limpia</title>
-  <link rel="stylesheet" href="/style.css">
+  <title>Panel Administrador</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../Home/inicio.css">
 </head>
 <body>
-
-<div class="container">
-  <div class="card">
-    <header>
-      <h1>Panel de Administrador</h1>
-      <p>Ciudad Limpia</p>
-      <button id="btnLogout">Cerrar sesión</button>
-    </header>
-
-    <h2>Estadísticas Generales</h2>
-
-    <div class="stats">
-      <p>Total Reportes: <strong id="totalReportes">0</strong></p>
-      <p>Pendientes: <strong id="pendientes">0</strong></p>
-      <p>Resueltos: <strong id="resueltos">0</strong></p>
-      <p>Total Usuarios: <strong id="totalUsuarios">0</strong></p>
+  <header class="nav">
+    <div class="nav__left">
+      <span class="nav__brand">Panel Administrador</span>
     </div>
+    <nav class="nav__links">
+      <a class="nav__link active" href="admin.html">Dashboard</a>
+      <a class="nav__link" href="admin-reportes.html">Reportes</a>
+      <a class="nav__link" href="admin-usuarios.html">Usuarios</a>
+      <a class="nav__link" href="admin-rutas.html">Rutas</a>
+      <a class="nav__link" href="admin-perfil.html">Mi Perfil</a>
+      <button id="logout" class="nav__btn" type="button">Cerrar sesion</button>
+    </nav>
+  </header>
 
-    <hr>
+  <main style="padding:30px;">
+    <h1>Bienvenido Administrador</h1>
+    <p id="adminName"></p>
 
-    <div style="margin-top:20px;">
-      <a href="admin_reportes.html">Gestionar Reportes</a><br><br>
-      <a href="admin_usuarios.html">Gestionar Usuarios</a><br><br>
-      <a href="admin_perfil.html">Mi Perfil</a>
+    <div style="display:flex; gap:20px; margin-top:30px; flex-wrap:wrap;">
+      <a class="home__btn" href="admin-reportes.html">Gestionar Reportes</a>
+      <a class="home__btn home__btn--outline" href="admin-usuarios.html">Gestionar Usuarios</a>
+      <a class="home__btn home__btn--outline" href="admin-rutas.html">Gestionar Rutas</a>
     </div>
+  </main>
 
-  </div>
-</div>
-
-<script type="module" src="/Admin/admin.js"></script>
+  <script type="module" src="admin.js"></script>
 </body>
 </html>
