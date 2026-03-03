@@ -1,6 +1,6 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { renderNavbar } from "../Componentes/navbar.js";
-import { auth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
+import { auth, firebaseConfig, fetchWithAuth, getUserContext, logoutUser } from "../Componentes/auth.js";
 
 const profileForm = document.getElementById("profileForm");
 const nameInput = document.getElementById("nameInput");
@@ -90,11 +90,11 @@ profileForm.addEventListener("submit", async (event) => {
   saveProfileBtn.disabled = true;
 
   try {
-    await fetch(userUrl(currentUser.uid), {
+    await fetchWithAuth(userUrl(currentUser.uid), {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, phone, address })
-    });
+    }, currentUser);
 
     currentProfile = { ...(currentProfile || {}), name, phone, address };
     setStatus(profileStatus, "Informacion actualizada correctamente.", "success");
@@ -143,11 +143,11 @@ reportsList.addEventListener("click", async (event) => {
       reporteFecha: report.fecha || ""
     };
 
-    await fetch(trackingRequestUrl(currentUser.uid, reportId), {
+    await fetchWithAuth(trackingRequestUrl(currentUser.uid, reportId), {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
-    });
+    }, currentUser);
 
     trackingRequestsByReport[reportId] = payload;
     renderReports();
@@ -171,11 +171,11 @@ addFavoriteBtn.addEventListener("click", async () => {
   addFavoriteBtn.disabled = true;
 
   try {
-    await fetch(userFavoriteRouteUrl(currentUser.uid, routeId), {
+    await fetchWithAuth(userFavoriteRouteUrl(currentUser.uid, routeId), {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ addedAt: new Date().toISOString() })
-    });
+    }, currentUser);
 
     await loadFavorites();
     setStatus(favoritesStatus, "Ruta agregada a favoritas.", "success");
@@ -197,7 +197,7 @@ favoritesList.addEventListener("click", async (event) => {
   button.disabled = true;
 
   try {
-    await fetch(userFavoriteRouteUrl(currentUser.uid, routeId), { method: "DELETE" });
+    await fetchWithAuth(userFavoriteRouteUrl(currentUser.uid, routeId), { method: "DELETE" }, currentUser);
     await loadFavorites();
     setStatus(favoritesStatus, "Ruta eliminada de favoritas.", "success");
   } catch (error) {
@@ -224,8 +224,8 @@ async function loadReports() {
 
   try {
     const [reportsData, trackingData] = await Promise.all([
-      fetchJson(reportsUrl),
-      fetchJson(trackingRequestsUrl)
+      fetchByChildEquals(reportsUrl, "usuarioUid", currentUser.uid),
+      fetchByChildEquals(trackingRequestsUrl, "usuarioUid", currentUser.uid)
     ]);
 
     userReportsById = filterReportsForUser(reportsData || {});
@@ -416,9 +416,16 @@ function renderAvailableRoutes() {
 }
 
 async function fetchJson(url) {
-  const response = await fetch(url);
+  const response = await fetchWithAuth(url, {}, currentUser);
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  return response.json();
+  const data = await response.json().catch(() => ({}));
+  if (data?.error) throw new Error(data.error);
+  return data || {};
+}
+
+async function fetchByChildEquals(baseUrl, child, value) {
+  const url = `${baseUrl}?orderBy=${encodeURIComponent(`"${child}"`)}&equalTo=${encodeURIComponent(`"${value}"`)}`;
+  return fetchJson(url);
 }
 
 function setStatus(element, message, type = "info") {

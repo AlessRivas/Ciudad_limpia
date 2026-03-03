@@ -1,5 +1,5 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { auth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
+import { auth, fetchWithAuth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
 
 const usuariosBody = document.getElementById("usuariosBody");
 const btnRecargar = document.getElementById("btnRecargar");
@@ -9,6 +9,7 @@ const filtroRol = document.getElementById("filtroRol");
 
 let usuariosGlobal = [];
 let usuariosFiltrados = [];
+let sessionUser = null;
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -16,6 +17,7 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
+  sessionUser = user;
   const { role } = await getUserContext(user);
   if (role !== "admin") {
     alert("No autorizado");
@@ -45,21 +47,25 @@ usuariosBody.addEventListener("click", async (event) => {
   const selector = document.getElementById(`role-${uid}`);
   const nuevoRol = selector?.value || "user";
 
-  await fetch(`${firebaseConfig.databaseURL}/users/${uid}.json`, {
+  await fetchWithAuth(`${firebaseConfig.databaseURL}/users/${uid}.json`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ role: nuevoRol })
-  });
+  }, sessionUser);
 
   await cargarUsuarios();
 });
 
 async function cargarUsuarios() {
   try {
-    const response = await fetch(`${firebaseConfig.databaseURL}/users.json`);
-    const data = (await response.json()) || {};
+    const data = await fetchJson(`${firebaseConfig.databaseURL}/users.json`);
 
-    usuariosGlobal = Object.entries(data);
+    if (data?.users && typeof data.users === "object" && Object.keys(data).length === 1) {
+      usuariosGlobal = Object.entries(data.users);
+    } else {
+      usuariosGlobal = Object.entries(data || {});
+    }
+
     aplicarFiltros();
   } catch (error) {
     console.error("Error cargando usuarios:", error);
@@ -67,6 +73,15 @@ async function cargarUsuarios() {
     usuariosFiltrados = [];
     renderTabla();
   }
+}
+
+async function fetchJson(url) {
+  const response = await fetchWithAuth(url, {}, sessionUser);
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data?.error) {
+    throw new Error(data?.error || `HTTP ${response.status}`);
+  }
+  return data || {};
 }
 
 function aplicarFiltros() {

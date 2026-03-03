@@ -1,6 +1,6 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { renderNavbar } from "../Componentes/navbar.js";
-import { auth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
+import { auth, fetchWithAuth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
 
 const DB_URL = `${firebaseConfig.databaseURL}/rutas.json`;
 
@@ -9,6 +9,7 @@ const resultado = document.getElementById("resultado");
 
 let rutasGlobal = [];
 let markers = [];
+let sessionUser = null;
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -16,6 +17,7 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
+  sessionUser = user;
   const { role } = await getUserContext(user);
 
   renderNavbar({
@@ -24,6 +26,8 @@ onAuthStateChanged(auth, async (user) => {
     role,
     base: ".."
   });
+
+  await cargarRutas();
 });
 
 document.addEventListener("click", async (event) => {
@@ -42,15 +46,22 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 async function cargarRutas() {
   try {
-    const response = await fetch(DB_URL);
-    const data = await response.json();
+    const response = await fetchWithAuth(DB_URL, {}, sessionUser);
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || data?.error) {
+      throw new Error(data?.error || `HTTP ${response.status}`);
+    }
 
-    if (!data) {
+    const baseData = data?.rutas && typeof data.rutas === "object" && Object.keys(data).length === 1
+      ? data.rutas
+      : data;
+
+    if (!baseData || typeof baseData !== "object") {
       resultado.innerHTML = "<p>No hay rutas registradas.</p>";
       return;
     }
 
-    rutasGlobal = Object.values(data);
+    rutasGlobal = Object.values(baseData);
     mostrarRutas(rutasGlobal);
     dibujarMarcadores(rutasGlobal);
   } catch (error) {
@@ -102,11 +113,9 @@ function dibujarMarcadores(rutas) {
 inputBusqueda.addEventListener("input", () => {
   const texto = inputBusqueda.value.toLowerCase();
   const filtradas = rutasGlobal.filter((ruta) =>
-    ruta.nombre.toLowerCase().includes(texto) || ruta.zona.toLowerCase().includes(texto)
+    (ruta?.nombre || "").toLowerCase().includes(texto) || (ruta?.zona || "").toLowerCase().includes(texto)
   );
 
   mostrarRutas(filtradas);
   dibujarMarcadores(filtradas);
 });
-
-cargarRutas();

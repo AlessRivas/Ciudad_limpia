@@ -1,159 +1,32 @@
-﻿import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { auth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { auth, fetchWithAuth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
 
-const adminInfo = document.getElementById("adminInfo");
-const lista = document.getElementById("lista");
+const DB_BASE = `${firebaseConfig.databaseURL}/reportes`;
 
-const q = document.getElementById("q");
-const fEstado = document.getElementById("fEstado");
-const btnReload = document.getElementById("btnReload");
-const btnLogout = document.getElementById("btnLogout");
+const tablaBody = document.getElementById("tablaBody");
+const paginacionDiv = document.getElementById("paginacion");
+const btnRecargar = document.getElementById("btnRecargar");
+const btnLogout = document.getElementById("logout");
 
-const formEdit = document.getElementById("formEdit");
-const rid = document.getElementById("rid");
-const tipo = document.getElementById("tipo");
-const ubicacion = document.getElementById("ubicacion");
-const descripcion = document.getElementById("descripcion");
-const estado = document.getElementById("estado");
+const buscador = document.getElementById("buscador");
+const filtroEstado = document.getElementById("filtroEstado");
+
+const modal = document.getElementById("modalEditar");
+const editId = document.getElementById("editId");
+const editTipo = document.getElementById("editTipo");
+const editUsuario = document.getElementById("editUsuario");
+const editUbicacion = document.getElementById("editUbicacion");
+const editDescripcion = document.getElementById("editDescripcion");
+const editEstado = document.getElementById("editEstado");
 
 const btnGuardar = document.getElementById("btnGuardar");
-const btnEliminar = document.getElementById("btnEliminar");
-const status = document.getElementById("status");
+const btnCerrar = document.getElementById("btnCerrar");
 
-const REPORTES_URL = `${firebaseConfig.databaseURL}/reportes.json`;
-const reporteUrl = (id) => `${firebaseConfig.databaseURL}/reportes/${id}.json`;
-
-let reportes = {};
-let currentId = null;
-
-function badgeClass(estadoStr) {
-  const e = (estadoStr || "").toLowerCase();
-  if (e.includes("proceso")) return "proceso";
-  if (e.includes("resuelto")) return "resuelto";
-  return "pendiente";
-}
-
-function setActiveCard(id) {
-  document.querySelectorAll(".item").forEach((el) => el.classList.remove("active"));
-  const el = document.getElementById(`rep-${id}`);
-  if (el) el.classList.add("active");
-}
-
-function resetEditor() {
-  currentId = null;
-  rid.value = "";
-  tipo.value = "";
-  ubicacion.value = "";
-  descripcion.value = "";
-  estado.value = "Pendiente";
-  btnEliminar.disabled = true;
-  status.textContent = "";
-}
-
-function fillEditor(id) {
-  const reporte = reportes[id];
-  if (!reporte) return;
-
-  currentId = id;
-  rid.value = id;
-  tipo.value = reporte.tipo || "";
-  ubicacion.value = reporte.ubicacion || "";
-  descripcion.value = reporte.descripcion || "";
-  estado.value = reporte.estado || "Pendiente";
-
-  btnEliminar.disabled = false;
-  status.style.color = "#777";
-  status.textContent = `Editando reporte: ${id}`;
-}
-
-function getFilteredList() {
-  const text = q.value.trim().toLowerCase();
-  const est = fEstado.value;
-
-  return Object.entries(reportes)
-    .map(([id, reporte]) => ({ id, ...reporte }))
-    .filter((reporte) => {
-      if (est && (reporte.estado || "") !== est) return false;
-
-      if (!text) return true;
-      const hay = [
-        reporte.tipo,
-        reporte.ubicacion,
-        reporte.usuario,
-        reporte.descripcion,
-        reporte.estado,
-        reporte.fecha
-      ]
-        .join(" ")
-        .toLowerCase();
-
-      return hay.includes(text);
-    })
-    .sort((a, b) => (b.fecha || "").localeCompare(a.fecha || ""));
-}
-
-function renderList() {
-  const list = getFilteredList();
-  lista.innerHTML = "";
-
-  if (!list.length) {
-    lista.innerHTML = `<p style="color:#777;font-weight:700;">No hay reportes con esos filtros.</p>`;
-    return;
-  }
-
-  for (const reporte of list) {
-    const div = document.createElement("div");
-    div.className = "item";
-    div.id = `rep-${reporte.id}`;
-
-    div.innerHTML = `
-      <h3>${escapeHtml(reporte.tipo || "Reporte")}</h3>
-      <p><b>Usuario:</b> ${escapeHtml(reporte.usuario || "-")}</p>
-      <p><b>Ubicacion:</b> ${escapeHtml(reporte.ubicacion || "-")}</p>
-      <p><b>Fecha:</b> ${escapeHtml(reporte.fecha || "-")}</p>
-      <span class="badge ${badgeClass(reporte.estado)}">${escapeHtml(reporte.estado || "Pendiente")}</span>
-
-      <div class="actions">
-        <button class="btnView" type="button" data-view="${reporte.id}">Editar</button>
-        <button class="btnQuick" type="button" data-set="${reporte.id}|Pendiente">Pendiente</button>
-        <button class="btnQuick" type="button" data-set="${reporte.id}|En proceso">En proceso</button>
-        <button class="btnQuick" type="button" data-set="${reporte.id}|Resuelto">Resuelto</button>
-      </div>
-    `;
-
-    lista.appendChild(div);
-  }
-
-  if (currentId && document.getElementById(`rep-${currentId}`)) {
-    setActiveCard(currentId);
-  }
-}
-
-async function loadReportes() {
-  status.style.color = "#777";
-  status.textContent = "Cargando reportes...";
-
-  try {
-    const response = await fetch(REPORTES_URL);
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    reportes = (await response.json()) || {};
-
-    renderList();
-
-    status.style.color = "#2d5a27";
-    status.textContent = `Reportes cargados: ${Object.keys(reportes).length}`;
-  } catch (error) {
-    console.error("Error cargando reportes:", error);
-    reportes = {};
-    renderList();
-
-    status.style.color = "red";
-    status.textContent = "No se pudieron cargar los reportes.";
-  }
-}
+let reportesGlobal = [];
+let reportesFiltrados = [];
+let paginaActual = 1;
+const porPagina = 5;
+let sessionUser = null;
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -161,118 +34,221 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  const { profile, role } = await getUserContext(user);
-
+  sessionUser = user;
+  const { role } = await getUserContext(user);
   if (role !== "admin") {
-    alert("Acceso denegado: solo administradores.");
+    alert("No autorizado");
     window.location.href = "../Home/inicio.html";
     return;
   }
 
-  adminInfo.textContent = `Admin: ${profile?.name || user.email}`;
-
-  resetEditor();
-  await loadReportes();
+  await cargarReportes();
 });
 
-btnReload.addEventListener("click", loadReportes);
-q.addEventListener("input", renderList);
-fEstado.addEventListener("change", renderList);
-
-btnLogout.addEventListener("click", async () => {
+btnLogout?.addEventListener("click", async () => {
   await logoutUser();
   window.location.href = "../Login/login.html";
 });
 
-lista.addEventListener("click", async (event) => {
-  const view = event.target?.getAttribute?.("data-view");
-  const set = event.target?.getAttribute?.("data-set");
+btnRecargar.addEventListener("click", cargarReportes);
+buscador.addEventListener("input", aplicarFiltros);
+filtroEstado.addEventListener("change", aplicarFiltros);
 
-  if (view) {
-    setActiveCard(view);
-    fillEditor(view);
+btnGuardar.addEventListener("click", guardarEdicion);
+btnCerrar.addEventListener("click", cerrarModal);
+
+modal.addEventListener("click", (event) => {
+  if (event.target === modal) cerrarModal();
+});
+
+tablaBody.addEventListener("click", async (event) => {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+
+  const id = button.dataset.id;
+  const action = button.dataset.action;
+  if (!id || !action) return;
+
+  if (action === "editar") {
+    await abrirEditar(id);
+    return;
   }
 
-  if (set) {
-    const [id, newEstado] = set.split("|");
+  if (action === "eliminar") {
+    await eliminarReporte(id);
+  }
+});
 
-    await fetch(reporteUrl(id), {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ estado: newEstado })
+async function cargarReportes() {
+  try {
+    const data = await fetchJson(`${DB_BASE}.json`);
+
+    const baseData = data?.reportes && typeof data.reportes === "object" && Object.keys(data).length === 1
+      ? data.reportes
+      : data;
+
+    reportesGlobal = Object.entries(baseData || {});
+    aplicarFiltros();
+  } catch (error) {
+    console.error("Error al cargar reportes:", error);
+    reportesGlobal = [];
+    reportesFiltrados = [];
+    renderTabla();
+    renderPaginacion();
+  }
+}
+
+function aplicarFiltros() {
+  const texto = toSafeLower(buscador.value);
+  const estadoSeleccionado = filtroEstado.value;
+
+  reportesFiltrados = reportesGlobal.filter(([, reporte]) => {
+    const tipo = toSafeLower(reporte.tipo);
+    const usuario = toSafeLower(reporte.usuario);
+    const ubicacion = toSafeLower(reporte.ubicacion);
+    const estado = reporte.estado || "Pendiente";
+
+    const coincideTexto =
+      tipo.includes(texto) ||
+      usuario.includes(texto) ||
+      ubicacion.includes(texto);
+
+    const coincideEstado =
+      estadoSeleccionado === "Todos" ||
+      estado === estadoSeleccionado;
+
+    return coincideTexto && coincideEstado;
+  });
+
+  paginaActual = 1;
+  renderTabla();
+  renderPaginacion();
+}
+
+function renderTabla() {
+  tablaBody.innerHTML = "";
+
+  if (!reportesFiltrados.length) {
+    tablaBody.innerHTML = `
+      <tr>
+        <td class="empty" colspan="7">No hay reportes para mostrar.</td>
+      </tr>
+    `;
+    return;
+  }
+
+  const inicio = (paginaActual - 1) * porPagina;
+  const fin = inicio + porPagina;
+  const paginaItems = reportesFiltrados.slice(inicio, fin);
+
+  paginaItems.forEach(([id, reporte]) => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${escapeHtml(reporte.tipo || "-")}</td>
+      <td>${escapeHtml(reporte.usuario || "-")}</td>
+      <td>${escapeHtml(reporte.ubicacion || "-")}</td>
+      <td>${escapeHtml(reporte.descripcion || "-")}</td>
+      <td>${escapeHtml(reporte.fecha || "-")}</td>
+      <td>${escapeHtml(reporte.estado || "Pendiente")}</td>
+      <td>
+        <div class="acciones">
+          <button class="btn-editar" data-action="editar" data-id="${id}">Editar</button>
+          <button class="btn-eliminar" data-action="eliminar" data-id="${id}">Eliminar</button>
+        </div>
+      </td>
+    `;
+
+    tablaBody.appendChild(tr);
+  });
+}
+
+function renderPaginacion() {
+  paginacionDiv.innerHTML = "";
+
+  const totalPaginas = Math.ceil(reportesFiltrados.length / porPagina);
+  if (totalPaginas <= 1) return;
+
+  for (let i = 1; i <= totalPaginas; i += 1) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    if (i === paginaActual) btn.classList.add("active");
+
+    btn.addEventListener("click", () => {
+      paginaActual = i;
+      renderTabla();
+      renderPaginacion();
     });
 
-    reportes[id] = { ...(reportes[id] || {}), estado: newEstado };
-    renderList();
-
-    status.style.color = "#2d5a27";
-    status.textContent = `Estado actualizado: ${newEstado}`;
+    paginacionDiv.appendChild(btn);
   }
-});
+}
 
-formEdit.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  if (!currentId) return;
+async function abrirEditar(id) {
+  const data = await fetchJson(`${DB_BASE}/${id}.json`);
+  if (!data) return;
 
-  btnGuardar.disabled = true;
-  btnGuardar.textContent = "Guardando...";
+  editId.value = id;
+  editTipo.value = data.tipo || "";
+  editUsuario.value = data.usuario || "";
+  editUbicacion.value = data.ubicacion || "";
+  editDescripcion.value = data.descripcion || "";
+  editEstado.value = data.estado || "Pendiente";
 
-  try {
-    const payload = {
-      tipo: tipo.value.trim(),
-      ubicacion: ubicacion.value.trim(),
-      descripcion: descripcion.value.trim(),
-      estado: estado.value
-    };
+  modal.style.display = "flex";
+  modal.setAttribute("aria-hidden", "false");
+}
 
-    await fetch(reporteUrl(currentId), {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+async function guardarEdicion() {
+  const id = editId.value;
+  if (!id) return;
 
-    reportes[currentId] = { ...(reportes[currentId] || {}), ...payload };
-    renderList();
-    setActiveCard(currentId);
+  await fetchWithAuth(`${DB_BASE}/${id}.json`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      tipo: editTipo.value.trim(),
+      usuario: editUsuario.value.trim(),
+      ubicacion: editUbicacion.value.trim(),
+      descripcion: editDescripcion.value.trim(),
+      estado: editEstado.value
+    })
+  }, sessionUser);
 
-    status.style.color = "#2d5a27";
-    status.textContent = "Cambios guardados";
-  } catch (error) {
-    console.error("Error guardando cambios:", error);
-    status.style.color = "red";
-    status.textContent = "Error al guardar";
-  } finally {
-    btnGuardar.disabled = false;
-    btnGuardar.textContent = "Guardar cambios";
-  }
-});
+  cerrarModal();
+  await cargarReportes();
+}
 
-btnEliminar.addEventListener("click", async () => {
-  if (!currentId) return;
-  if (!confirm("Seguro que quieres eliminar este reporte?")) return;
+function cerrarModal() {
+  modal.style.display = "none";
+  modal.setAttribute("aria-hidden", "true");
+}
 
-  try {
-    await fetch(reporteUrl(currentId), { method: "DELETE" });
-    delete reportes[currentId];
+async function eliminarReporte(id) {
+  if (!confirm("Eliminar reporte?")) return;
 
-    status.style.color = "#2d5a27";
-    status.textContent = "Reporte eliminado";
+  await fetchWithAuth(`${DB_BASE}/${id}.json`, { method: "DELETE" }, sessionUser);
+  await cargarReportes();
+}
 
-    resetEditor();
-    renderList();
-  } catch (error) {
-    console.error("Error eliminando reporte:", error);
-    status.style.color = "red";
-    status.textContent = "No se pudo eliminar";
-  }
-});
+function toSafeLower(value) {
+  return (value || "").toString().toLowerCase();
+}
 
 function escapeHtml(value) {
-  return (value || "")
-    .toString()
+  return value
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+async function fetchJson(url) {
+  const response = await fetchWithAuth(url, {}, sessionUser);
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data?.error) {
+    throw new Error(data?.error || `HTTP ${response.status}`);
+  }
+  return data || {};
 }

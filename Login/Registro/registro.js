@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { auth, firebaseConfig, getLandingPathByRole, getUserContext } from "../../Componentes/auth.js";
+import { auth, fetchWithAuth, firebaseConfig, getLandingPathByRole, getUserContext } from "../../Componentes/auth.js";
 
 const form = document.getElementById("registerForm");
 const statusMsg = document.getElementById("status");
@@ -39,11 +39,11 @@ form.addEventListener("submit", async (event) => {
       createdAt: new Date().toISOString()
     };
 
-    const response = await fetch(`${firebaseConfig.databaseURL}/users/${uid}.json`, {
+    const response = await fetchWithAuth(`${firebaseConfig.databaseURL}/users/${uid}.json`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData)
-    });
+    }, credential.user);
 
     if (!response.ok) throw new Error("No se pudo guardar el perfil");
 

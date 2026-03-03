@@ -1,6 +1,6 @@
 import { onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { renderNavbar } from "../Componentes/navbar.js";
-import { auth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
+import { auth, fetchWithAuth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
 
 const emailSpan = document.getElementById("email");
 const rolSpan = document.getElementById("rol");
@@ -55,11 +55,11 @@ document.getElementById("profileForm").addEventListener("submit", async (event) 
   }
 
   try {
-    await fetch(`${firebaseConfig.databaseURL}/users/${activeUser.uid}.json`, {
+    await fetchWithAuth(`${firebaseConfig.databaseURL}/users/${activeUser.uid}.json`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: nuevoNombre })
-    });
+    }, activeUser);
 
     showStatus("Nombre actualizado correctamente.", "success");
   } catch (error) {

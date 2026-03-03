@@ -1,5 +1,5 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { auth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
+import { auth, fetchWithAuth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
 
 const DB_BASE = `${firebaseConfig.databaseURL}/rutas`;
 
@@ -21,6 +21,7 @@ const btnCerrarRuta = document.getElementById("btnCerrarRuta");
 
 let rutasGlobal = [];
 let rutasFiltradas = [];
+let sessionUser = null;
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -28,6 +29,7 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
+  sessionUser = user;
   const { role } = await getUserContext(user);
   if (role !== "admin") {
     alert("No autorizado");
@@ -59,11 +61,11 @@ rutaForm.addEventListener("submit", async (event) => {
   };
 
   try {
-    const response = await fetch(`${DB_BASE}.json`, {
+    const response = await fetchWithAuth(`${DB_BASE}.json`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nuevaRuta)
-    });
+    }, sessionUser);
 
     if (!response.ok) throw new Error("No se pudo guardar la ruta");
 
@@ -101,10 +103,13 @@ modal.addEventListener("click", (event) => {
 
 async function cargarRutas() {
   try {
-    const response = await fetch(`${DB_BASE}.json`);
-    const data = (await response.json()) || {};
+    const data = await fetchJson(`${DB_BASE}.json`);
 
-    rutasGlobal = Object.entries(data);
+    const baseData = data?.rutas && typeof data.rutas === "object" && Object.keys(data).length === 1
+      ? data.rutas
+      : data;
+
+    rutasGlobal = Object.entries(baseData || {});
     aplicarFiltros();
   } catch (error) {
     console.error("Error cargando rutas:", error);
@@ -164,8 +169,7 @@ function renderTabla() {
 }
 
 async function abrirEditar(id) {
-  const response = await fetch(`${DB_BASE}/${id}.json`);
-  const ruta = await response.json();
+  const ruta = await fetchJson(`${DB_BASE}/${id}.json`);
   if (!ruta) return;
 
   editRutaId.value = id;
@@ -182,7 +186,7 @@ async function guardarEdicionRuta() {
   const id = editRutaId.value;
   if (!id) return;
 
-  await fetch(`${DB_BASE}/${id}.json`, {
+  await fetchWithAuth(`${DB_BASE}/${id}.json`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -191,7 +195,7 @@ async function guardarEdicionRuta() {
       dia: editDia.value,
       hora: editHora.value
     })
-  });
+  }, sessionUser);
 
   cerrarModalRuta();
   await cargarRutas();
@@ -205,9 +209,9 @@ function cerrarModalRuta() {
 async function eliminarRuta(id) {
   if (!confirm("Eliminar ruta?")) return;
 
-  await fetch(`${DB_BASE}/${id}.json`, {
+  await fetchWithAuth(`${DB_BASE}/${id}.json`, {
     method: "DELETE"
-  });
+  }, sessionUser);
 
   await cargarRutas();
 }
@@ -223,4 +227,13 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+async function fetchJson(url) {
+  const response = await fetchWithAuth(url, {}, sessionUser);
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data?.error) {
+    throw new Error(data?.error || `HTTP ${response.status}`);
+  }
+  return data || {};
 }
