@@ -4,23 +4,32 @@
   <meta charset="UTF-8">
   <title>Admin - Reportes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../Home/inicio.css">
   <link rel="stylesheet" href="admin-reportes.css">
 </head>
 <body>
-  <div class="admin-layout">
-    <aside class="sidebar">
-      <h2>Admin Panel</h2>
-      <ul>
-        <li class="active"><a href="admin-reportes.html">Reportes</a></li>
-        <li><a href="admin-rutas.html">Rutas</a></li>
-        <li><a href="admin-usuarios.html">Usuarios</a></li>
-        <li><a href="admin.html">Dashboard</a></li>
-        <li><a href="admin-perfil.html">Mi Perfil</a></li>
-      </ul>
-      <button id="logout" class="btn-logout" type="button">Cerrar sesion</button>
-    </aside>
+  <header class="nav">
+    <div class="nav__left">
+      <img src="../Imagenes/Logo.jpg" class="nav__logo" alt="Logo">
+      <span class="nav__brand">Ciudad Limpia</span>
+    </div>
+    <nav class="nav__links"></nav>
+  </header>
 
+  <div class="admin-layout">
     <main class="content">
+      <section class="admin-dropdown-wrap">
+        <details class="admin-dropdown">
+          <summary>Admin Panel</summary>
+          <nav class="admin-dropdown__menu" aria-label="Menu admin">
+            <a class="active" href="admin-reportes.html">Gestion de reportes</a>
+            <a href="admin-rutas.html">Gestion de rutas</a>
+            <a href="admin-usuarios.html">Gestion de usuarios</a>
+          </nav>
+        </details>
+      </section>
+
       <div class="topbar">
         <h1>Gestion de Reportes</h1>
         <button id="btnRecargar" type="button">Recargar</button>

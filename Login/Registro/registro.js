@@ -1,10 +1,17 @@
 import { createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { renderNavbar } from "../../Componentes/navbar.js";
 import { auth, fetchWithAuth, firebaseConfig, getLandingPathByRole, getUserContext } from "../../Componentes/auth.js";
 
 const form = document.getElementById("registerForm");
 const statusMsg = document.getElementById("status");
 const btnRegister = document.getElementById("btnRegister");
 let isCreatingAccount = false;
+
+renderNavbar({
+  active: "registro",
+  user: null,
+  base: "../.."
+});
 
 onAuthStateChanged(auth, async (user) => {
   if (!user || isCreatingAccount) return;

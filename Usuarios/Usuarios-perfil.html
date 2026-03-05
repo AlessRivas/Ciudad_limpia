@@ -17,49 +17,70 @@
   </header>
 
   <main class="perfil-page">
-    <section class="perfil-card">
-      <h1>Mi informacion</h1>
-      <p id="profileStatus" class="status status--info" aria-live="polite">Cargando informacion...</p>
+    <details class="perfil-dropdown" open>
+      <summary>Cambio de informacion</summary>
+      <section class="perfil-card">
+        <p id="profileStatus" class="status status--info" aria-live="polite">Cargando informacion...</p>
 
-      <div class="perfil-grid">
-        <div class="perfil-readonly">
-          <p><strong>Email:</strong> <span id="emailTxt">-</span></p>
-          <p><strong>Rol:</strong> <span id="rolTxt">-</span></p>
+        <div class="perfil-grid">
+          <div class="perfil-readonly">
+            <p><strong>Email:</strong> <span id="emailTxt">-</span></p>
+          </div>
         </div>
-      </div>
 
-      <form id="profileForm" class="form-grid">
-        <label for="nameInput">Nombre</label>
-        <input id="nameInput" type="text" maxlength="80" required />
+        <form id="profileForm" class="form-grid">
+          <label for="nameInput">Nombre</label>
+          <input id="nameInput" type="text" maxlength="80" required />
 
-        <label for="phoneInput">Telefono</label>
-        <input id="phoneInput" type="tel" maxlength="20" required />
+          <label for="phoneInput">Telefono</label>
+          <input id="phoneInput" type="tel" maxlength="20" required />
 
-        <label for="addressInput">Direccion</label>
-        <input id="addressInput" type="text" maxlength="150" required />
+          <label for="addressInput">Direccion</label>
+          <input id="addressInput" type="text" maxlength="150" required />
 
-        <button id="saveProfileBtn" type="submit">Guardar cambios</button>
-      </form>
-    </section>
+          <button id="saveProfileBtn" type="submit">Guardar cambios</button>
+        </form>
+      </section>
+    </details>
 
-    <section class="perfil-card">
-      <h2>Mis reportes</h2>
-      <p class="hint">Aqui puedes revisar tus reportes y solicitar seguimiento.</p>
-      <div id="reportsStatus" class="status status--info">Cargando reportes...</div>
-      <div id="reportsList" class="list"></div>
-    </section>
+    <details class="perfil-dropdown">
+      <summary>Mis reportes</summary>
+      <section class="perfil-card">
+        <p class="hint">Aqui puedes revisar tus reportes y solicitar seguimiento.</p>
+        <div id="reportsStatus" class="status status--info">Cargando reportes...</div>
 
-    <section class="perfil-card">
-      <h2>Rutas favoritas</h2>
-      <div id="favoritesStatus" class="status status--info">Cargando rutas...</div>
+        <div class="tabla-wrap">
+          <table class="tabla-reportes-usuario">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Usuario</th>
+                <th>Ubicacion</th>
+                <th>Descripcion</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="reportsTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </details>
 
-      <div class="favorite-controls">
-        <select id="routeSelect"></select>
-        <button id="addFavoriteBtn" type="button">Agregar a favoritas</button>
-      </div>
+    <details class="perfil-dropdown">
+      <summary>Rutas favoritas</summary>
+      <section class="perfil-card">
+        <div id="favoritesStatus" class="status status--info">Cargando rutas...</div>
 
-      <div id="favoritesList" class="list"></div>
-    </section>
+        <div class="favorite-controls">
+          <select id="routeSelect"></select>
+          <button id="addFavoriteBtn" type="button">Agregar a favoritas</button>
+        </div>
+
+        <div id="favoritesList" class="list"></div>
+      </section>
+    </details>
   </main>
 
   <script type="module" src="Usuarios-perfil.js"></script>

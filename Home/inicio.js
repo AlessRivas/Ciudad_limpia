@@ -3,8 +3,8 @@ import { renderNavbar } from "../Componentes/navbar.js";
 import { auth, getUserContext, logoutUser } from "../Componentes/auth.js";
 
 const status = document.getElementById("status");
+const navbar = document.getElementById("navbar");
 const perfilCta = document.getElementById("perfilCta");
-const perfilCardLink = document.getElementById("perfilCardLink");
 
 onAuthStateChanged(auth, async (user) => {
   const { role } = await getUserContext(user);
@@ -21,7 +21,6 @@ onAuthStateChanged(auth, async (user) => {
     : "../Usuarios/Usuarios-perfil.html";
 
   if (perfilCta) perfilCta.href = perfilHref;
-  if (perfilCardLink) perfilCardLink.href = perfilHref;
 
   if (user) {
     status.style.color = "#2d5a27";
@@ -37,4 +36,13 @@ document.addEventListener("click", async (event) => {
 
   await logoutUser();
   window.location.href = "../Login/login.html";
+});
+
+window.addEventListener("scroll", () => {
+  if (!navbar) return;
+  if (window.scrollY > 50) {
+    navbar.classList.add("nav-active");
+  } else {
+    navbar.classList.remove("nav-active");
+  }
 });

@@ -1,9 +1,16 @@
 import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { renderNavbar } from "../Componentes/navbar.js";
 import { auth, getLandingPathByRole, getUserContext } from "../Componentes/auth.js";
 
 const loginForm = document.getElementById("loginForm");
 const statusMsg = document.getElementById("status");
 const btnLogin = document.getElementById("btnLogin");
+
+renderNavbar({
+  active: "login",
+  user: null,
+  base: ".."
+});
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) return;

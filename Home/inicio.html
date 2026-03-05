@@ -6,9 +6,10 @@
   <title>Ciudad Limpia - Inicio</title>
   <link rel="stylesheet" href="../style.css" />
   <link rel="stylesheet" href="inicio.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
 </head>
-<body>
-  <header class="nav">
+<body class="inicio-page">
+  <header class="nav" id="navbar">
     <div class="nav__left">
       <img src="../Imagenes/Logo.jpg" class="nav__logo" alt="Logo">
       <span class="nav__brand">Ciudad Limpia</span>
@@ -17,36 +18,79 @@
   </header>
 
   <main class="home">
-    <section class="home__hero">
-      <h1>Bienvenido a Ciudad Limpia</h1>
-      <p>Consulta rutas y horarios, y reporta incidencias de recoleccion desde un solo lugar.</p>
+    <section class="hero">
+      <div class="hero__content">
+        <h1>Por un Durango mas verde</h1>
+        <p>Gestiona tus reportes de residuos y mantente informado sobre las rutas de limpieza en tu colonia.</p>
 
-      <div class="home__actions">
-        <a class="home__btn" href="../Reportes/reportes.html">Ir a Reportes</a>
-        <a class="home__btn home__btn--outline" href="../Rutas/Rutas.html">Ver Rutas</a>
-        <a id="perfilCta" class="home__btn home__btn--outline" href="../Usuarios/Usuarios-perfil.html">Mi Perfil</a>
+        <div class="home__actions">
+          <a class="home__btn" href="../Reportes/reportes.html">Hacer un reporte</a>
+          <a class="home__btn home__btn--outline" href="../Rutas/Rutas.html">Ver rutas</a>
+          <a id="perfilCta" class="home__btn home__btn--outline" href="../Usuarios/Usuarios-perfil.html">Mi perfil</a>
+        </div>
+
+        <div id="status" class="home__status"></div>
       </div>
-
-      <div id="status" class="home__status"></div>
     </section>
 
-    <section class="home__grid">
-      <div class="home__card">
-        <h3>Reportes</h3>
-        <p>Crea reportes con tipo de incidencia, ubicacion y descripcion.</p>
-        <a href="../Reportes/reportes.html">Abrir -></a>
-      </div>
+    <section class="section-title">
+      <h2>Noticias Recientes</h2>
+      <div class="underline"></div>
+    </section>
 
-      <div class="home__card">
-        <h3>Rutas y Horarios</h3>
-        <p>Busca por ruta, colonia, calle u horario y visualiza el recorrido.</p>
-        <a href="../Rutas/Rutas.html">Abrir -></a>
-      </div>
+    <section class="news-grid">
+      <article class="news-card">
+        <div class="news-img" style="background-image: url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=500');"></div>
+        <div class="news-body">
+          <span class="tag">Oficial</span>
+          <h3>Nuevos horarios de recoleccion</h3>
+          <p>La zona centro tendra recoleccion nocturna a partir del proximo lunes para evitar trafico.</p>
+        </div>
+      </article>
 
-      <div class="home__card">
-        <h3>Mi Perfil</h3>
-        <p>Revisa tus datos y gestiona tu sesion.</p>
-        <a id="perfilCardLink" href="../Usuarios/Usuarios-perfil.html">Abrir -></a>
+      <article class="news-card">
+        <div class="news-img" style="background-image: url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=500');"></div>
+        <div class="news-body">
+          <span class="tag">Evento</span>
+          <h3>Reciclaton UNIPOLI</h3>
+          <p>Invitamos a toda la comunidad estudiantil a traer sus desechos electronicos este viernes.</p>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img" style="background-image: url('https://images.unsplash.com/photo-1595273670150-bd0c3c392e46?q=80&w=500');"></div>
+        <div class="news-body">
+          <span class="tag">Exito</span>
+          <h3>3 toneladas recolectadas</h3>
+          <p>Gracias a los reportes ciudadanos, logramos limpiar un tiradero clandestino en la colonia Juarez.</p>
+        </div>
+      </article>
+    </section>
+
+    <section id="consejos" class="tips-section">
+      <section class="section-title">
+        <h2>Consejos Ecologicos</h2>
+        <div class="underline"></div>
+      </section>
+
+      <div class="tips-grid">
+        <article class="tip-card">
+          <div class="tip-icon-wrapper">REC</div>
+          <h4>Separa</h4>
+          <p>Divide organicos e inorganicos para facilitar el reciclaje.</p>
+        </article>
+
+        <article class="tip-card">
+          <div class="tip-icon-wrapper">RED</div>
+          <h4>Reduce</h4>
+          <p>Evita plasticos de un solo uso en tus compras diarias.</p>
+        </article>
+
+        <article class="tip-card">
+          <div class="tip-icon-wrapper">COM</div>
+          <h4>Composta</h4>
+          <p>Los residuos vegetales son excelentes abonos para tu jardin.</p>
+        </article>
       </div>
     </section>
   </main>

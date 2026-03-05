@@ -1,299 +1,317 @@
 :root {
-  --verde: #2d5a27;
-  --verde-sec: #3f7d36;
-  --gris-fondo: #f4f6f9;
-  --gris-claro: #f9fafb;
-  --rojo: #b02a2a;
-  --amarillo: #facc15;
+  --primary-green: #2d5a27;
+  --accent-green: #4caf50;
+  --surface: #ffffff;
+  --bg: #f4f7f6;
+  --text: #333333;
+  --muted: #667085;
+  --danger: #b3261e;
+  --warn: #facc15;
 }
 
 body {
   margin: 0;
-  font-family: "Segoe UI", sans-serif;
-  background: var(--gris-fondo);
+  font-family: "Poppins", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+.admin-dropdown-wrap {
+  margin-bottom: 14px;
+}
+
+.admin-dropdown {
+  width: min(280px, 100%);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.admin-dropdown summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 16px;
+  background: var(--primary-green);
+  color: #fff;
+  font-weight: 700;
+}
+
+.admin-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-dropdown[open] summary {
+  background: #245221;
+}
+
+.admin-dropdown__menu {
+  background: #245221;
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+}
+
+.admin-dropdown__menu a {
+  display: block;
+  text-decoration: none;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-weight: 600;
+}
+
+.admin-dropdown__menu a:hover,
+.admin-dropdown__menu a.active {
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .admin-layout {
   display: flex;
-  min-height: 100vh;
+  min-height: auto;
 }
 
 .sidebar {
-  width: 240px;
-  background: var(--verde);
-  color: white;
-  padding: 30px 20px;
+  width: 250px;
+  background: var(--primary-green);
+  color: #fff;
+  padding: 28px 20px;
   display: flex;
   flex-direction: column;
+  gap: 14px;
 }
 
 .sidebar h2 {
-  margin-bottom: 30px;
+  margin: 0 0 10px;
+  font-size: 2rem;
 }
 
 .sidebar ul {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
 }
 
 .sidebar li {
-  border-radius: 8px;
-  margin-bottom: 10px;
-  transition: 0.2s ease;
+  border-radius: 12px;
 }
 
 .sidebar li a {
   display: block;
-  color: white;
+  padding: 12px 14px;
   text-decoration: none;
-  padding: 12px;
+  color: #fff;
 }
 
 .sidebar li.active,
 .sidebar li:hover {
-  background: var(--verde-sec);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .btn-logout {
   margin-top: auto;
-  background: #143513;
-  color: white;
   border: 1px solid #5ea75b;
-  border-radius: 10px;
-  padding: 10px 14px;
+  background: #143513;
+  color: #fff;
+  border-radius: 12px;
+  padding: 12px;
   cursor: pointer;
-}
-
-.btn-logout:hover {
-  background: #1f4b1d;
+  font-weight: 600;
 }
 
 .content {
   flex: 1;
-  padding: 40px;
+  width: min(1400px, 100%);
+  margin: 0 auto;
+  padding: 18px 20px 28px;
 }
 
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
   gap: 12px;
+  margin-bottom: 18px;
 }
 
 .topbar h1 {
-  color: var(--verde);
   margin: 0;
+  color: var(--primary-green);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
 }
 
 #btnRecargar {
-  background: var(--verde);
-  color: white;
-  padding: 10px 28px;
-  border-radius: 25px;
   border: none;
-  font-weight: 600;
+  background: var(--primary-green);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-weight: 700;
   cursor: pointer;
-  transition: 0.2s ease;
+  width: auto;
+  min-width: 160px;
 }
 
 #btnRecargar:hover {
-  background: var(--verde-sec);
-  transform: translateY(-2px);
+  background: var(--accent-green);
 }
 
 .filtros {
   display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
   flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .filtros input,
 .filtros select {
-  padding: 9px 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  width: 260px;
-  font-size: 14px;
-}
-
-.filtros input:focus,
-.filtros select:focus {
-  outline: none;
-  border-color: var(--verde);
+  flex: 1;
+  min-width: 240px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #cfd4dc;
+  font-family: inherit;
 }
 
 .tabla-wrap {
   overflow-x: auto;
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
 
 .tabla-reportes {
   width: 100%;
   border-collapse: collapse;
-  background: white;
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  background: var(--surface);
 }
 
 .tabla-reportes th {
-  background: var(--verde);
-  color: white;
-  padding: 15px;
+  background: var(--primary-green);
+  color: #fff;
   text-align: left;
-  font-weight: 600;
+  padding: 14px 16px;
 }
 
 .tabla-reportes td {
-  padding: 13px;
-  border-bottom: 1px solid #eee;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e8eaee;
   vertical-align: top;
 }
 
 .tabla-reportes tr:hover {
-  background: var(--gris-claro);
+  background: #f8faf8;
 }
 
 .acciones {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 8px;
-  align-items: center;
 }
 
 .btn-editar,
 .btn-eliminar {
-  width: 100px;
-  height: 36px;
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: 8px;
+  width: 110px;
   border: none;
+  border-radius: 10px;
+  height: 38px;
   cursor: pointer;
-  transition: 0.2s ease;
+  font-weight: 700;
 }
 
 .btn-editar {
-  background: var(--amarillo);
-  color: black;
-}
-
-.btn-editar:hover {
-  background: #eab308;
-  transform: translateY(-2px);
+  background: var(--warn);
 }
 
 .btn-eliminar {
-  background: var(--rojo);
-  color: white;
-}
-
-.btn-eliminar:hover {
-  background: #991b1b;
-  transform: translateY(-2px);
+  background: var(--danger);
+  color: #fff;
 }
 
 .paginacion {
-  margin-top: 25px;
+  margin-top: 18px;
   text-align: center;
 }
 
 .paginacion button {
-  padding: 7px 14px;
-  margin: 0 5px;
-  border: 1px solid var(--verde);
-  background: white;
-  color: var(--verde);
-  border-radius: 6px;
+  border: 1px solid var(--primary-green);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--primary-green);
+  padding: 6px 12px;
+  margin: 0 4px;
   cursor: pointer;
-  transition: 0.2s ease;
 }
 
+.paginacion button.active,
 .paginacion button:hover {
-  background: var(--verde-sec);
-  color: white;
-}
-
-.paginacion button.active {
-  background: var(--verde);
-  color: white;
+  background: var(--primary-green);
+  color: #fff;
 }
 
 .modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
 .modal-content {
-  background: white;
-  padding: 30px;
-  width: 420px;
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  width: min(460px, 92vw);
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
 }
 
 .modal-content h2 {
   margin-top: 0;
-  color: var(--verde);
+  color: var(--primary-green);
 }
 
 .modal-content input,
 .modal-content textarea,
 .modal-content select {
   width: 100%;
-  margin-bottom: 14px;
-  padding: 9px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
   box-sizing: border-box;
-}
-
-.modal-content input:focus,
-.modal-content textarea:focus,
-.modal-content select:focus {
-  outline: none;
-  border-color: var(--verde);
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid #cfd4dc;
+  border-radius: 10px;
+  font-family: inherit;
 }
 
 .modal-buttons {
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+#btnGuardar,
+#btnCerrar {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 700;
 }
 
 #btnGuardar {
-  background: var(--verde);
-  color: white;
-  padding: 9px 18px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-#btnGuardar:hover {
-  background: var(--verde-sec);
+  background: var(--primary-green);
+  color: #fff;
 }
 
 #btnCerrar {
-  background: gray;
-  color: white;
-  padding: 9px 18px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+  background: #7a7f87;
+  color: #fff;
 }
 
 .empty {
   text-align: center;
-  color: #666;
-  padding: 22px 8px;
+  color: var(--muted);
+  padding: 24px 8px;
 }
 
 @media (max-width: 980px) {
@@ -301,11 +319,20 @@ body {
     flex-direction: column;
   }
 
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #btnRecargar {
+    width: 100%;
+  }
+
   .sidebar {
     width: auto;
   }
 
   .content {
-    padding: 20px;
+    padding: 22px 16px 26px;
   }
 }

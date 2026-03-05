@@ -1,8 +1,8 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { renderNavbar } from "../Componentes/navbar.js";
 import { auth, getUserContext, logoutUser } from "../Componentes/auth.js";
 
 const adminName = document.getElementById("adminName");
-const logoutBtn = document.getElementById("logout");
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -17,10 +17,19 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
+  renderNavbar({
+    active: "admin",
+    user,
+    role,
+    base: ".."
+  });
+
   adminName.textContent = `Admin: ${profile?.name || user.email}`;
 });
 
-logoutBtn.addEventListener("click", async () => {
+document.addEventListener("click", async (event) => {
+  const id = event.target?.id;
+  if (id !== "btnLogout" && id !== "logout") return;
   await logoutUser();
   window.location.href = "../Login/login.html";
 });

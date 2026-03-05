@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi Perfil - Ciudad Limpia</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="../Home/inicio.css">
@@ -10,33 +11,36 @@
 <body>
   <header class="nav">
     <div class="nav__left">
-      <span class="nav__brand">Mi Perfil</span>
+      <img src="../Imagenes/Logo.jpg" class="nav__logo" alt="Logo">
+      <span class="nav__brand">Ciudad Limpia</span>
     </div>
     <nav class="nav__links"></nav>
   </header>
 
-  <main class="perfil-container">
-    <div class="perfil-card">
-      <h1>Mi Perfil</h1>
-      <p id="statusMessage" class="perfil-status perfil-status--info" aria-live="polite" hidden></p>
+  <div class="admin-layout">
+    <main class="content perfil-container">
+      <div class="perfil-card">
+        <h1>Mi Perfil</h1>
+        <p id="statusMessage" class="perfil-status perfil-status--info" aria-live="polite" hidden></p>
 
-      <div class="perfil-info">
-        <p><strong>Email:</strong> <span id="email">Cargando...</span></p>
-        <p><strong>Rol:</strong> <span id="rol">Cargando...</span></p>
+        <div class="perfil-info">
+          <p><strong>Email:</strong> <span id="email">Cargando...</span></p>
+          <p><strong>Rol:</strong> <span id="rol">Cargando...</span></p>
+        </div>
+
+        <form id="profileForm" class="perfil-edit">
+          <label for="nombreInput">Nombre</label>
+          <input type="text" id="nombreInput" autocomplete="name" maxlength="60" disabled>
+          <button type="submit" id="guardarNombre" disabled>Guardar cambios</button>
+        </form>
+
+        <div class="perfil-password">
+          <h3>Cambiar contrasena</h3>
+          <button id="resetPassword" type="button" disabled>Enviar correo de cambio</button>
+        </div>
       </div>
-
-      <form id="profileForm" class="perfil-edit">
-        <label for="nombreInput">Nombre</label>
-        <input type="text" id="nombreInput" autocomplete="name" maxlength="60" disabled>
-        <button type="submit" id="guardarNombre" disabled>Guardar cambios</button>
-      </form>
-
-      <div class="perfil-password">
-        <h3>Cambiar contrasena</h3>
-        <button id="resetPassword" type="button" disabled>Enviar correo de cambio</button>
-      </div>
-    </div>
-  </main>
+    </main>
+  </div>
 
   <script type="module" src="admin-perfil.js"></script>
 </body>

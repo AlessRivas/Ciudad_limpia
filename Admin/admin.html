@@ -2,35 +2,50 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel Administrador</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="../Home/inicio.css">
+  <link rel="stylesheet" href="admin-dashboard.css">
 </head>
 <body>
   <header class="nav">
     <div class="nav__left">
-      <span class="nav__brand">Panel Administrador</span>
+      <img src="../Imagenes/Logo.jpg" class="nav__logo" alt="Logo">
+      <span class="nav__brand">Ciudad Limpia</span>
     </div>
-    <nav class="nav__links">
-      <a class="nav__link active" href="admin.html">Dashboard</a>
-      <a class="nav__link" href="admin-reportes.html">Reportes</a>
-      <a class="nav__link" href="admin-usuarios.html">Usuarios</a>
-      <a class="nav__link" href="admin-rutas.html">Rutas</a>
-      <a class="nav__link" href="admin-perfil.html">Mi Perfil</a>
-      <button id="logout" class="nav__btn" type="button">Cerrar sesion</button>
-    </nav>
+    <nav class="nav__links"></nav>
   </header>
 
-  <main style="padding:30px;">
-    <h1>Bienvenido Administrador</h1>
-    <p id="adminName"></p>
+  <div class="admin-layout">
+    <main class="content">
+      <div class="topbar">
+        <h1>Panel de Administrador</h1>
+      </div>
 
-    <div style="display:flex; gap:20px; margin-top:30px; flex-wrap:wrap;">
-      <a class="home__btn" href="admin-reportes.html">Gestionar Reportes</a>
-      <a class="home__btn home__btn--outline" href="admin-usuarios.html">Gestionar Usuarios</a>
-      <a class="home__btn home__btn--outline" href="admin-rutas.html">Gestionar Rutas</a>
-    </div>
-  </main>
+      <section class="welcome-card">
+        <h3>Bienvenido</h3>
+        <p id="adminName">Cargando administrador...</p>
+      </section>
+
+      <section class="dashboard-grid">
+        <a class="dashboard-card" href="admin-reportes.html">
+          <h4>Gestionar reportes</h4>
+          <p>Consulta incidencias, actualiza estado y da seguimiento.</p>
+        </a>
+
+        <a class="dashboard-card" href="admin-usuarios.html">
+          <h4>Gestionar usuarios</h4>
+          <p>Revisa datos de cuentas y ajusta roles del sistema.</p>
+        </a>
+
+        <a class="dashboard-card" href="admin-rutas.html">
+          <h4>Gestionar rutas</h4>
+          <p>Crea, edita o elimina rutas de recoleccion activas.</p>
+        </a>
+      </section>
+    </main>
+  </div>
 
   <script type="module" src="admin.js"></script>
 </body>

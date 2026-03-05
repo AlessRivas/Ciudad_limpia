@@ -1,44 +1,85 @@
+:root {
+  --primary-green: #2d5a27;
+  --accent-green: #4caf50;
+  --surface: #ffffff;
+  --bg: #f4f7f6;
+  --text: #333333;
+  --muted: #667085;
+  --danger: #b3261e;
+  --warn: #facc15;
+}
+
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
 .perfil-page {
-  max-width: 1100px;
+  width: min(1400px, 100%);
   margin: 0 auto;
-  padding: 24px 16px 40px;
+  padding: 22px 16px 36px;
   display: grid;
-  gap: 16px;
+  gap: 14px;
+}
+
+.perfil-dropdown {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  background: #245221;
+}
+
+.perfil-dropdown summary {
+  list-style: none;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 700;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.perfil-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.perfil-dropdown summary::after {
+  content: "+";
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.perfil-dropdown[open] summary::after {
+  content: "-";
 }
 
 .perfil-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
-  border-top: 8px solid #2d5a27;
-}
-
-.perfil-card h1,
-.perfil-card h2 {
-  margin: 0 0 8px;
-  color: #2d5a27;
+  background: var(--surface);
+  padding: 18px;
 }
 
 .hint {
-  color: #666;
+  color: var(--muted);
   margin: 0 0 12px;
   font-size: 14px;
 }
 
 .perfil-readonly p {
-  margin: 4px 0;
+  margin: 0 0 10px;
 }
 
 .form-grid {
-  margin-top: 10px;
+  margin-top: 6px;
   display: grid;
   gap: 8px;
 }
 
 .form-grid label {
   font-weight: 700;
-  color: #2d5a27;
+  color: var(--primary-green);
 }
 
 .form-grid input,
@@ -48,13 +89,21 @@
   padding: 10px 12px;
   border: 1.5px solid #d7d7d7;
   border-radius: 10px;
+  font-family: inherit;
+}
+
+.form-grid input:focus,
+.favorite-controls select:focus {
+  outline: none;
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
 }
 
 .form-grid button,
 .favorite-controls button,
 .btn-action {
   border: none;
-  background: #2d5a27;
+  background: var(--primary-green);
   color: #fff;
   border-radius: 10px;
   padding: 10px 12px;
@@ -63,9 +112,8 @@
 }
 
 .form-grid button:hover,
-.favorite-controls button:hover,
-.btn-action:hover {
-  background: #4caf50;
+.favorite-controls button:hover {
+  background: var(--accent-green);
 }
 
 .favorite-controls {
@@ -74,6 +122,98 @@
   gap: 10px;
   align-items: center;
   margin-bottom: 12px;
+}
+
+.status {
+  margin: 0 0 12px;
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-weight: 600;
+}
+
+.status--info {
+  background: #e8f1ff;
+  color: #2b4d80;
+}
+
+.status--success {
+  background: #e7f8ec;
+  color: #1f6a35;
+}
+
+.status--error {
+  background: #fdeaea;
+  color: #8a1f1f;
+}
+
+.tabla-wrap {
+  overflow-x: auto;
+  border-radius: 14px;
+  border: 1px solid #e8eaee;
+}
+
+.tabla-reportes-usuario {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  min-width: 920px;
+}
+
+.tabla-reportes-usuario th {
+  background: var(--primary-green);
+  color: #fff;
+  text-align: left;
+  padding: 12px 14px;
+  font-size: 1.05rem;
+}
+
+.tabla-reportes-usuario td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e8eaee;
+  vertical-align: top;
+}
+
+.tabla-reportes-usuario tr:hover {
+  background: #f8faf8;
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 22px 10px;
+}
+
+.estado-sub {
+  display: block;
+  margin-top: 4px;
+  color: #6b7280;
+  font-size: 0.86rem;
+}
+
+.respuesta-inline {
+  margin-top: 6px;
+  color: #5b6472;
+  font-size: 0.88rem;
+}
+
+.acciones-col {
+  display: grid;
+  gap: 8px;
+}
+
+.btn-action {
+  background: var(--warn);
+  color: #2f2f2f;
+}
+
+.btn-action:hover {
+  background: #e1b900;
+}
+
+.btn-action[disabled] {
+  background: #d9d9d9;
+  color: #6d6d6d;
+  cursor: not-allowed;
 }
 
 .list {
@@ -101,36 +241,15 @@
 }
 
 .btn-danger {
-  background: #b3261e;
+  background: var(--danger);
+  color: #fff;
 }
 
 .btn-danger:hover {
   background: #8f1e18;
 }
 
-.status {
-  margin: 0 0 12px;
-  border-radius: 10px;
-  padding: 9px 12px;
-  font-weight: 600;
-}
-
-.status--info {
-  background: #e8f1ff;
-  color: #2b4d80;
-}
-
-.status--success {
-  background: #e7f8ec;
-  color: #1f6a35;
-}
-
-.status--error {
-  background: #fdeaea;
-  color: #8a1f1f;
-}
-
-@media (max-width: 840px) {
+@media (max-width: 900px) {
   .favorite-controls {
     grid-template-columns: 1fr;
   }

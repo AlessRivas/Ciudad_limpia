@@ -20,8 +20,13 @@ onAuthStateChanged(auth, async (user) => {
   activeUser = user;
   const { profile, role } = await getUserContext(user);
 
+  if (role !== "admin") {
+    window.location.href = "../Usuarios/Usuarios-perfil.html";
+    return;
+  }
+
   renderNavbar({
-    active: "perfil",
+    active: "admin",
     user,
     role,
     base: ".."
@@ -37,7 +42,8 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 document.addEventListener("click", async (event) => {
-  if (event.target?.id !== "btnLogout") return;
+  const buttonId = event.target?.id;
+  if (buttonId !== "logout" && buttonId !== "btnLogout") return;
 
   await logoutUser();
   window.location.href = "../Login/login.html";

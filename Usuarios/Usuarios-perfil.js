@@ -7,12 +7,11 @@ const nameInput = document.getElementById("nameInput");
 const phoneInput = document.getElementById("phoneInput");
 const addressInput = document.getElementById("addressInput");
 const emailTxt = document.getElementById("emailTxt");
-const rolTxt = document.getElementById("rolTxt");
 const profileStatus = document.getElementById("profileStatus");
 const saveProfileBtn = document.getElementById("saveProfileBtn");
 
 const reportsStatus = document.getElementById("reportsStatus");
-const reportsList = document.getElementById("reportsList");
+const reportsTableBody = document.getElementById("reportsTableBody");
 
 const favoritesStatus = document.getElementById("favoritesStatus");
 const favoritesList = document.getElementById("favoritesList");
@@ -106,7 +105,7 @@ profileForm.addEventListener("submit", async (event) => {
   }
 });
 
-reportsList.addEventListener("click", async (event) => {
+reportsTableBody.addEventListener("click", async (event) => {
   const button = event.target.closest("button[data-action='solicitar']");
   if (!button || !currentUser) return;
 
@@ -209,7 +208,6 @@ favoritesList.addEventListener("click", async (event) => {
 
 function hydrateProfile() {
   emailTxt.textContent = currentUser?.email || "-";
-  rolTxt.textContent = "user";
   nameInput.value = currentProfile?.name || "";
   phoneInput.value = currentProfile?.phone || "";
   addressInput.value = currentProfile?.address || "";
@@ -284,44 +282,53 @@ function mapTrackingRequestsForUser(trackingObj) {
 
 function renderReports() {
   const entries = Object.entries(userReportsById);
-  reportsList.innerHTML = "";
+  reportsTableBody.innerHTML = "";
 
   if (!entries.length) {
-    reportsList.innerHTML = "<p class='item'>Aun no tienes reportes registrados.</p>";
+    reportsTableBody.innerHTML = `
+      <tr>
+        <td class="empty" colspan="7">Aun no tienes reportes registrados.</td>
+      </tr>
+    `;
     return;
   }
 
   entries.forEach(([id, report]) => {
     const request = trackingRequestsByReport[id];
-    const div = document.createElement("div");
-    div.className = "item";
-
-    div.innerHTML = `
-      <p><strong>Folio:</strong> ${escapeHtml(id)}</p>
-      <p><strong>Tipo:</strong> ${escapeHtml(report.tipo || "-")}</p>
-      <p><strong>Ubicacion:</strong> ${escapeHtml(report.ubicacion || "-")}</p>
-      <p><strong>Estado del reporte:</strong> ${escapeHtml(report.estado || "Pendiente")}</p>
-      <p><strong>Fecha:</strong> ${escapeHtml(report.fecha || "-")}</p>
-      <p><strong>Seguimiento:</strong> ${escapeHtml(request?.estadoSolicitud || "Sin solicitud")}</p>
-      ${
-        request?.respuesta
-          ? `<p><strong>Respuesta:</strong> ${escapeHtml(request.respuesta)}</p>`
-          : ""
-      }
-      <div class="row">
-        <button
-          class="btn-action"
-          type="button"
-          data-action="solicitar"
-          data-report-id="${id}"
-          ${request ? "disabled" : ""}
-        >
-          ${request ? "Seguimiento solicitado" : "Solicitar seguimiento"}
-        </button>
-      </div>
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${escapeHtml(report.tipo || "-")}</td>
+      <td>${escapeHtml(report.usuario || currentProfile?.name || "-")}</td>
+      <td>${escapeHtml(report.ubicacion || "-")}</td>
+      <td>
+        ${escapeHtml(report.descripcion || "-")}
+        ${
+          request?.respuesta
+            ? `<div class="respuesta-inline"><strong>Respuesta:</strong> ${escapeHtml(request.respuesta)}</div>`
+            : ""
+        }
+      </td>
+      <td>${escapeHtml(report.fecha || "-")}</td>
+      <td>
+        ${escapeHtml(report.estado || "Pendiente")}
+        <span class="estado-sub">Seguimiento: ${escapeHtml(request?.estadoSolicitud || "Sin solicitud")}</span>
+      </td>
+      <td>
+        <div class="acciones-col">
+          <button
+            class="btn-action"
+            type="button"
+            data-action="solicitar"
+            data-report-id="${id}"
+            ${request ? "disabled" : ""}
+          >
+            ${request ? "Seguimiento solicitado" : "Solicitar seguimiento"}
+          </button>
+        </div>
+      </td>
     `;
 
-    reportsList.appendChild(div);
+    reportsTableBody.appendChild(tr);
   });
 }
 

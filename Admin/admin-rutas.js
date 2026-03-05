@@ -1,4 +1,5 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { renderNavbar } from "../Componentes/navbar.js";
 import { auth, fetchWithAuth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
 
 const DB_BASE = `${firebaseConfig.databaseURL}/rutas`;
@@ -6,7 +7,6 @@ const DB_BASE = `${firebaseConfig.databaseURL}/rutas`;
 const rutaForm = document.getElementById("rutaForm");
 const rutasBody = document.getElementById("rutasBody");
 const btnRecargar = document.getElementById("btnRecargar");
-const btnLogout = document.getElementById("logout");
 const buscadorRuta = document.getElementById("buscadorRuta");
 const filtroDia = document.getElementById("filtroDia");
 
@@ -37,10 +37,19 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
+  renderNavbar({
+    active: "admin",
+    user,
+    role,
+    base: ".."
+  });
+
   await cargarRutas();
 });
 
-btnLogout?.addEventListener("click", async () => {
+document.addEventListener("click", async (event) => {
+  const id = event.target?.id;
+  if (id !== "btnLogout" && id !== "logout") return;
   await logoutUser();
   window.location.href = "../Login/login.html";
 });

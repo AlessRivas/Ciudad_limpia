@@ -5,15 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ciudad Limpia - Login</title>
   <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../Home/inicio.css" />
 </head>
 <body>
+  <header class="nav">
+    <div class="nav__left">
+      <img src="../Imagenes/Logo.jpg" class="nav__logo" alt="Logo">
+      <span class="nav__brand">Ciudad Limpia</span>
+    </div>
+    <nav class="nav__links"></nav>
+  </header>
+
   <div class="container">
     <div class="card">
       <header>
         <div class="logo-container">
           <img src="../Imagenes/Logo.jpg" class="main-logo" alt="Logo">
         </div>
-        <h1>Iniciar sesión</h1>
+        <h1>Iniciar sesion</h1>
         <p>Ciudad Limpia</p>
       </header>
 
@@ -24,7 +33,7 @@
         </div>
 
         <div class="form-group">
-          <label for="password">Contraseña</label>
+          <label for="password">Contrasena</label>
           <input id="password" type="password" required placeholder="********" />
         </div>
 
@@ -32,7 +41,7 @@
       </form>
 
       <p style="text-align:center;margin:12px 0 0;">
-        ¿No tienes cuenta? <a href="Registro/registro.html">Crear cuenta</a>
+        No tienes cuenta? <a href="Registro/registro.html">Crear cuenta</a>
       </p>
 
       <div id="status"></div>

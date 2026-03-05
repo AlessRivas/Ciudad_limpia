@@ -33,23 +33,11 @@ body {
     border-radius: 50%; 
 }
 
-header h1 {
-    margin: 0;
-    color: var(--primary-green);
-    font-size: 2.2rem;
-    font-weight: 600;
-}
-
-header p {
-    color: #8d7d66;
-    letter-spacing: 1px;
-}
-
 .container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    min-height: calc(100vh - 88px);
     padding: 20px;
 }
 
@@ -63,18 +51,18 @@ header p {
     border-top: 8px solid var(--primary-green);
 }
 
-header {
+.card > header {
     text-align: center;
     margin-bottom: 2rem;
 }
 
-header h1 {
+.card > header h1 {
     margin: 0;
     color: var(--primary-green);
     font-size: 1.8rem;
 }
 
-header p {
+.card > header p {
     margin: 5px 0;
     color: #777;
 }
@@ -112,7 +100,6 @@ input:focus, select:focus, textarea:focus {
 }
 
 button {
-    width: 100%;
     padding: 14px;
     background-color: var(--primary-green);
     color: white;
@@ -122,11 +109,16 @@ button {
     font-weight: 600;
     cursor: pointer;
     transition: background 0.3s ease;
-    margin-top: 10px;
+    margin-top: 0;
 }
 
 button:hover {
     background-color: var(--accent-green);
+}
+
+.card button {
+    width: 100%;
+    margin-top: 10px;
 }
 
 #status {

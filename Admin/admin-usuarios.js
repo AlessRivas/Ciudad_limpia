@@ -1,9 +1,9 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { renderNavbar } from "../Componentes/navbar.js";
 import { auth, fetchWithAuth, firebaseConfig, getUserContext, logoutUser } from "../Componentes/auth.js";
 
 const usuariosBody = document.getElementById("usuariosBody");
 const btnRecargar = document.getElementById("btnRecargar");
-const btnLogout = document.getElementById("logout");
 const buscadorUsuario = document.getElementById("buscadorUsuario");
 const filtroRol = document.getElementById("filtroRol");
 
@@ -25,10 +25,19 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
+  renderNavbar({
+    active: "admin",
+    user,
+    role,
+    base: ".."
+  });
+
   await cargarUsuarios();
 });
 
-btnLogout?.addEventListener("click", async () => {
+document.addEventListener("click", async (event) => {
+  const id = event.target?.id;
+  if (id !== "btnLogout" && id !== "logout") return;
   await logoutUser();
   window.location.href = "../Login/login.html";
 });
