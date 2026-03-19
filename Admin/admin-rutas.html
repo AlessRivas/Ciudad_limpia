@@ -40,6 +40,18 @@
         <form id="rutaForm" class="ruta-form">
           <input type="text" id="nombreRuta" placeholder="Nombre de la ruta" required>
           <input type="text" id="zona" placeholder="Zona o colonia" required>
+          <div class="coord-row">
+            <input type="text" id="inicioDireccion" placeholder="Direccion inicio">
+            <button type="button" id="btnGeoInicio" class="btn-geo">Buscar coordenadas</button>
+          </div>
+          <input type="number" id="inicioLat" placeholder="Latitud inicio" step="any" min="-90" max="90">
+          <input type="number" id="inicioLng" placeholder="Longitud inicio" step="any" min="-180" max="180">
+          <div class="coord-row">
+            <input type="text" id="finDireccion" placeholder="Direccion fin">
+            <button type="button" id="btnGeoFin" class="btn-geo">Buscar coordenadas</button>
+          </div>
+          <input type="number" id="finLat" placeholder="Latitud fin" step="any" min="-90" max="90">
+          <input type="number" id="finLng" placeholder="Longitud fin" step="any" min="-180" max="180">
           <input type="time" id="hora" required>
           <select id="dia" required>
             <option value="">Seleccionar dia</option>
@@ -53,6 +65,7 @@
           </select>
           <button type="submit" class="btn-primary">Guardar ruta</button>
         </form>
+        <p id="geoStatus" class="geo-status" aria-live="polite"></p>
       </section>
 
       <div class="filtros">
@@ -94,6 +107,24 @@
       <input type="text" id="editNombreRuta">
       <label>Zona</label>
       <input type="text" id="editZona">
+      <label>Direccion inicio</label>
+      <div class="coord-row modal-row">
+        <input type="text" id="editInicioDireccion" placeholder="Direccion inicio">
+        <button type="button" id="btnGeoInicioEdit" class="btn-geo">Buscar</button>
+      </div>
+      <label>Latitud inicio</label>
+      <input type="number" id="editInicioLat" step="any" min="-90" max="90">
+      <label>Longitud inicio</label>
+      <input type="number" id="editInicioLng" step="any" min="-180" max="180">
+      <label>Direccion fin</label>
+      <div class="coord-row modal-row">
+        <input type="text" id="editFinDireccion" placeholder="Direccion fin">
+        <button type="button" id="btnGeoFinEdit" class="btn-geo">Buscar</button>
+      </div>
+      <label>Latitud fin</label>
+      <input type="number" id="editFinLat" step="any" min="-90" max="90">
+      <label>Longitud fin</label>
+      <input type="number" id="editFinLng" step="any" min="-180" max="180">
       <label>Dia</label>
       <select id="editDia">
         <option>Lunes</option>

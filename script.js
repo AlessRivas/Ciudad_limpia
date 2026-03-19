@@ -64,7 +64,7 @@ reportForm.addEventListener('submit', async (e) => {
             const data = await response.json();
             console.log("Éxito, ID generado:", data.name);
             
-            statusMsg.innerHTML = "✅ ¡Reporte enviado! Tu folio es: " + data.name;
+            statusMsg.innerHTML = "¡Reporte enviado! Tu folio es: " + data.name;
             statusMsg.style.color = "#2d5a27";
             reportForm.reset();
             otroContainer.style.display = 'none';
@@ -73,7 +73,7 @@ reportForm.addEventListener('submit', async (e) => {
         }
     } catch (error) {
         console.error("Error:", error);
-        statusMsg.innerHTML = "❌ No se pudo enviar el reporte. Revisa la consola.";
+        statusMsg.innerHTML = "No se pudo enviar el reporte. Revisa la consola.";
         statusMsg.style.color = "red";
     } finally {
         btnEnviar.disabled = false;

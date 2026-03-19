@@ -42,6 +42,25 @@ body {
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
 }
 
+.route-status {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #eef5ec;
+  color: var(--primary-green);
+  font-weight: 600;
+}
+
+.route-status[data-type="warn"] {
+  background: #fff4d6;
+  color: #7a5c1a;
+}
+
+.route-status[data-type="success"] {
+  background: #e7f4e8;
+  color: #1f5b24;
+}
+
 #map {
   height: 500px;
   border-radius: 16px;
@@ -58,9 +77,20 @@ body {
 }
 
 .ruta-card {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
   padding: 12px 12px;
   border-bottom: 1px solid #e8eaee;
   line-height: 1.55;
+  color: var(--text);
+  font-family: inherit;
+}
+
+.ruta-card.active {
+  background: #f1f6ef;
 }
 
 .ruta-card strong {

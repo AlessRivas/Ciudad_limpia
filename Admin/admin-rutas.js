@@ -9,11 +9,28 @@ const rutasBody = document.getElementById("rutasBody");
 const btnRecargar = document.getElementById("btnRecargar");
 const buscadorRuta = document.getElementById("buscadorRuta");
 const filtroDia = document.getElementById("filtroDia");
+const inicioLat = document.getElementById("inicioLat");
+const inicioLng = document.getElementById("inicioLng");
+const finLat = document.getElementById("finLat");
+const finLng = document.getElementById("finLng");
+const inicioDireccion = document.getElementById("inicioDireccion");
+const finDireccion = document.getElementById("finDireccion");
+const btnGeoInicio = document.getElementById("btnGeoInicio");
+const btnGeoFin = document.getElementById("btnGeoFin");
+const geoStatus = document.getElementById("geoStatus");
 
 const modal = document.getElementById("modalEditarRuta");
 const editRutaId = document.getElementById("editRutaId");
 const editNombreRuta = document.getElementById("editNombreRuta");
 const editZona = document.getElementById("editZona");
+const editInicioLat = document.getElementById("editInicioLat");
+const editInicioLng = document.getElementById("editInicioLng");
+const editFinLat = document.getElementById("editFinLat");
+const editFinLng = document.getElementById("editFinLng");
+const editInicioDireccion = document.getElementById("editInicioDireccion");
+const editFinDireccion = document.getElementById("editFinDireccion");
+const btnGeoInicioEdit = document.getElementById("btnGeoInicioEdit");
+const btnGeoFinEdit = document.getElementById("btnGeoFinEdit");
 const editDia = document.getElementById("editDia");
 const editHora = document.getElementById("editHora");
 const btnGuardarRuta = document.getElementById("btnGuardarRuta");
@@ -57,6 +74,18 @@ document.addEventListener("click", async (event) => {
 btnRecargar.addEventListener("click", cargarRutas);
 buscadorRuta.addEventListener("input", aplicarFiltros);
 filtroDia.addEventListener("change", aplicarFiltros);
+btnGeoInicio.addEventListener("click", () =>
+  geocodeToInputs(inicioDireccion.value, inicioLat, inicioLng, "Inicio")
+);
+btnGeoFin.addEventListener("click", () =>
+  geocodeToInputs(finDireccion.value, finLat, finLng, "Fin")
+);
+btnGeoInicioEdit.addEventListener("click", () =>
+  geocodeToInputs(editInicioDireccion.value, editInicioLat, editInicioLng, "Inicio (edicion)", modal)
+);
+btnGeoFinEdit.addEventListener("click", () =>
+  geocodeToInputs(editFinDireccion.value, editFinLat, editFinLng, "Fin (edicion)", modal)
+);
 
 rutaForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -64,6 +93,12 @@ rutaForm.addEventListener("submit", async (event) => {
   const nuevaRuta = {
     nombre: document.getElementById("nombreRuta").value.trim(),
     zona: document.getElementById("zona").value.trim(),
+    startAddress: inicioDireccion.value.trim(),
+    endAddress: finDireccion.value.trim(),
+    startLat: parseCoord(inicioLat.value),
+    startLng: parseCoord(inicioLng.value),
+    endLat: parseCoord(finLat.value),
+    endLng: parseCoord(finLng.value),
     hora: document.getElementById("hora").value,
     dia: document.getElementById("dia").value,
     creada: new Date().toISOString()
@@ -184,6 +219,12 @@ async function abrirEditar(id) {
   editRutaId.value = id;
   editNombreRuta.value = ruta.nombre || "";
   editZona.value = ruta.zona || "";
+  editInicioDireccion.value = ruta.startAddress || "";
+  editFinDireccion.value = ruta.endAddress || "";
+  editInicioLat.value = formatCoord(ruta.startLat);
+  editInicioLng.value = formatCoord(ruta.startLng);
+  editFinLat.value = formatCoord(ruta.endLat);
+  editFinLng.value = formatCoord(ruta.endLng);
   editDia.value = ruta.dia || "Lunes";
   editHora.value = ruta.hora || "";
 
@@ -201,6 +242,12 @@ async function guardarEdicionRuta() {
     body: JSON.stringify({
       nombre: editNombreRuta.value.trim(),
       zona: editZona.value.trim(),
+      startAddress: editInicioDireccion.value.trim(),
+      endAddress: editFinDireccion.value.trim(),
+      startLat: parseCoord(editInicioLat.value),
+      startLng: parseCoord(editInicioLng.value),
+      endLat: parseCoord(editFinLat.value),
+      endLng: parseCoord(editFinLng.value),
       dia: editDia.value,
       hora: editHora.value
     })
@@ -227,6 +274,53 @@ async function eliminarRuta(id) {
 
 function toSafeLower(value) {
   return (value || "").toString().toLowerCase();
+}
+
+async function geocodeToInputs(address, latInput, lngInput, label) {
+  const trimmed = (address || "").trim();
+  if (!trimmed) {
+    setGeoStatus(`${label}: ingresa una direccion primero.`, "warn");
+    return;
+  }
+
+  setGeoStatus(`${label}: buscando coordenadas...`, "info");
+
+  try {
+    const query = encodeURIComponent(trimmed);
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1&countrycodes=mx`;
+    const response = await fetch(url, {
+      headers: { "Accept-Language": "es" }
+    });
+    const data = await response.json().catch(() => []);
+
+    if (!response.ok || !Array.isArray(data) || !data.length) {
+      setGeoStatus(`${label}: no se encontraron resultados.`, "warn");
+      return;
+    }
+
+    const { lat, lon } = data[0];
+    latInput.value = lat;
+    lngInput.value = lon;
+    setGeoStatus(`${label}: coordenadas encontradas.`, "success");
+  } catch (error) {
+    console.error("Error geocodificando:", error);
+    setGeoStatus(`${label}: no se pudo geocodificar.`, "warn");
+  }
+}
+
+function setGeoStatus(message, type = "info") {
+  if (!geoStatus) return;
+  geoStatus.textContent = message;
+  geoStatus.dataset.type = type;
+}
+
+function parseCoord(value) {
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function formatCoord(value) {
+  return Number.isFinite(value) ? value : "";
 }
 
 function escapeHtml(value) {
