@@ -171,7 +171,6 @@
 .hero {
   margin-top: 0;
   min-height: 62vh;
-
   background:
     linear-gradient(rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.58)),
     url("https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=1500")
@@ -216,9 +215,6 @@
   border-radius: 30px;
   font-weight: 700;
   border: 2px solid transparent;
-}
-.home__btn--outline:hover {
-  background: #3b9540;
 }
 
 .home__btn--outline {
@@ -319,7 +315,6 @@
 .tip-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 12px 24px rgba(45, 90, 39, 0.1);
-
 }
 
 .tip-icon-wrapper {
@@ -351,11 +346,13 @@
   color: #777;
   line-height: 1.55;
 }
+
 .contacto-footer {
   background: #2d5a27;
   color: white;
   padding: 25px 10px;
 }
+
 .footer-content {
   max-width: 900px;
   margin: auto;
@@ -366,11 +363,13 @@
   flex-wrap: wrap;
   text-align: center;
 }
+
 .footer-logo {
-    width:80px;
-    height:65px;
-    border-radius:50%;
+  width: 80px;
+  height: 65px;
+  border-radius: 50%;
 }
+
 @media (max-width: 900px) {
   .nav {
     flex-direction: column;
@@ -401,5 +400,4 @@
     border-radius: 16px;
     margin-top: 14px;
   }
-
 }

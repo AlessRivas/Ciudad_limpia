@@ -1,2 +1,4 @@
 docs/
 scripts/extract-pdf-text.js
+.firebase/
+public/
